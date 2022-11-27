@@ -1,20 +1,42 @@
 version: '3'
 
 services:
+  # Nginx container
+  webserver:
+    image: ploshka/symfony-nginx:latest
+    container_name: webserver
+    volumes:
+      - ./:/app:ro
+    ports:
+      - 80:80    
+    networks:
+      - app-network
+
+  # PHP-fpm container
+  app:
+    image: ploshka/symfony-app:latest
+    container_name: app
+    volumes:
+      - ./:/app:rw
+    networks:
+      - app-network
+    command: dev
+
+  # MySQL container
 ###> doctrine/doctrine-bundle ###
   database:
-    image: postgres:${POSTGRES_VERSION:-14}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+    image: mysql:${MYSQL_VERSION:-8.0.31}
+    container_name: mysql-database
+    env_file: .env
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
+      - db-data:/var/lib/mysql:rw
+    networks:
+      - app-network
 ###< doctrine/doctrine-bundle ###
 
+networks:
+  app-network:
+    driver: bridge
 volumes:
 ###> doctrine/doctrine-bundle ###
   db-data:
