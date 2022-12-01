@@ -25,9 +25,9 @@ services:
   # MySQL container
 ###> doctrine/doctrine-bundle ###
   database:
-    image: mysql:${MYSQL_VERSION:-8.0.31}
+    image: mysql:8.0.31
     container_name: mysql-database
-    env_file: .env
+    env_file: db.env
     volumes:
       - db-data:/var/lib/mysql:rw
     networks:
