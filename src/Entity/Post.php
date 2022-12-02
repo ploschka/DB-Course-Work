@@ -16,9 +16,6 @@ class Post
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $postId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -36,18 +33,6 @@ class Post
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPostId(): ?int
-    {
-        return $this->postId;
-    }
-
-    public function setPostId(int $postId): self
-    {
-        $this->postId = $postId;
-
-        return $this;
     }
 
     public function getName(): ?string

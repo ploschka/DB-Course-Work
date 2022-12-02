@@ -15,9 +15,6 @@ class Worker
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $workerId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -40,18 +37,6 @@ class Worker
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getWorkerId(): ?int
-    {
-        return $this->workerId;
-    }
-
-    public function setWorkerId(int $workerId): self
-    {
-        $this->workerId = $workerId;
-
-        return $this;
     }
 
     public function getName(): ?string

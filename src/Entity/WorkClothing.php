@@ -10,12 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 class WorkClothing
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 6)]
-    private ?string $clothingId = null;
+    private ?string $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
@@ -34,14 +30,9 @@ class WorkClothing
         return $this->id;
     }
 
-    public function getClothingId(): ?string
+    public function setId(string $id): self
     {
-        return $this->clothingId;
-    }
-
-    public function setClothingId(string $clothingId): self
-    {
-        $this->clothingId = $clothingId;
+        $this->id = $id;
 
         return $this;
     }

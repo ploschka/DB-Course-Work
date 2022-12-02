@@ -15,9 +15,6 @@ class Department
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $departmentId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -35,18 +32,6 @@ class Department
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDepartmentId(): ?int
-    {
-        return $this->departmentId;
-    }
-
-    public function setDepartmentId(int $departmentId): self
-    {
-        $this->departmentId = $departmentId;
-
-        return $this;
     }
 
     public function getName(): ?string
