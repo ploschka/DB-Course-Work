@@ -13,7 +13,7 @@ class WorkClothing
     #[ORM\Column(length: 6)]
     private ?string $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
