@@ -4,6 +4,18 @@
 
 {% block body %}
 
-    <div {{ vue_component('Table', { 'headers': headers, 'table': table }) }}></div>
-
+    <table class="table">
+        <tr>
+            {% for header in headers %}
+                <th> {{ header }} </th>
+            {% endfor %}
+        </tr>
+        {% for arr in items %}
+            <tr>
+                {% for item in arr %}
+                    <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
