@@ -8,10 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class WorkerController extends AbstractController
+class ReceivingController extends AbstractController
 {
-    #[Route(path: '/workers', name: 'workers')]
-    #[Menu(title: 'Работники')]
+    #[Route(path: '/receivings', name: 'receivings')]
+    #[Menu(title: 'Получения')]
     public function index(): Response
     {
         $arr = [
@@ -21,10 +21,10 @@ class WorkerController extends AbstractController
         $m = new MenuCreator;
         $headers = ['A', 'B', 'C', 'D', 'E'];
         return $this->render('table.html.twig', [
-            'title' => 'Работники',
+            'title' => 'Получения',
             'items' => $arr,
             'headers' => $headers,
-            'menu' => $m->getMenu('workers'),
+            'menu' => $m->getMenu('receivings'),
         ]);
     }
 }

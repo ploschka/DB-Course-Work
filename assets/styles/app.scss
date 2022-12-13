@@ -3,7 +3,7 @@ body
     margin: 0;
 }
 
-.navbar
+.menu
 {
     display: flex;
     justify-content: flex-start;
@@ -27,7 +27,7 @@ body
             text-align: center;
         }
 
-        &:hover, &-curr
+        &:hover, &.active
         {
             color: #73BDC0;
             background-color: #561615;

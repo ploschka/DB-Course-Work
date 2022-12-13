@@ -13,16 +13,16 @@
         {% endblock %}
     </head>
     <body>
-        <div class="navbar">
-            {% for item in navbar %}
-                {% if item.curr %}
-                    {% set curr = 'navbar-item-curr' %}
+        <div class="menu">
+            {% for item in menu %}
+                {% if item.active %}
+                    {% set curr = 'active' %}
                 {% else %}
                     {% set curr = '' %}
                 {% endif %}
                 
-                <a class="navbar-item {{ curr }}" {% if item.link %} href="{{ url(item.link) }}"{% endif %}>
-                    <div>{{ item.text }}</div>
+                <a class="menu-item {{ curr }}" href="{{ url(item.path) }}">
+                    <div>{{ item.title }}</div>
                 </a>
             {% endfor %}
         </div>
