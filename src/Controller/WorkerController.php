@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\WorkerRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,19 +11,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WorkerController extends AbstractController
 {
-    #[Route(path: '/workers', name: 'workers')]
+    #[Route('/workers', name: 'workers')]
     #[Menu(title: 'Работники')]
-    public function index(): Response
+    public function table(WorkerRepository $workerRepository): Response
     {
-        $arr = [
-            [1, 2, 3, 4, 5],
-            [6, 7, 8, 9, 10],
-        ];
+        $workers = $workerRepository->findAll();
+        $table = [];
+        foreach ($workers as $worker)
+        {
+            $table[] = [
+                $worker->getName(),
+                $worker->getDepartment()->getName(),
+                $worker->getPost()->getName(),
+            ];
+        }
+        $headers = ['ФИО', 'Цех', 'Должность'];
         $m = new MenuCreator;
-        $headers = ['A', 'B', 'C', 'D', 'E'];
         return $this->render('table.html.twig', [
             'title' => 'Работники',
-            'items' => $arr,
+            'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('workers'),
         ]);

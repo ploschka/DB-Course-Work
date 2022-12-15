@@ -38,14 +38,16 @@ body
 
 .table-wrapper
 {
-    background-color: antiquewhite;
+    $bord: solid thin black;
     padding: 5px;
     table
     {
-        border: solid thin black;
+        border: $bord;
         td
         {
             text-align: left;
+            border: $bord;
+            min-width: 80px;
         }
         th
         {

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\DepartmentRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,19 +11,24 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DepartmentController extends AbstractController
 {
-    #[Route(path: '/department', name: 'department')]
+    #[Route('/department', name: 'department')]
     #[Menu(title: 'Цеха')]
-    public function index(): Response
+    public function index(DepartmentRepository $departmentRepository): Response
     {
-        $arr = [
-            [1, 2, 3, 4, 5],
-            [6, 7, 8, 9, 10],
-        ];
+        $departments = $departmentRepository->findAll();
+        $table = [];
+        foreach ($departments as $department)
+        {
+            $table[] = [
+                $department->getName(),
+                $department->getChiefName()
+            ];
+        }
+        $headers = ['Название', 'ФИО начальника'];
         $m = new MenuCreator;
-        $headers = ['A', 'B', 'C', 'D', 'E'];
         return $this->render('table.html.twig', [
             'title' => 'Цеха',
-            'items' => $arr,
+            'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('department'),
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ReceivingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,19 +11,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ReceivingController extends AbstractController
 {
-    #[Route(path: '/receivings', name: 'receivings')]
+    #[Route('/receivings', name: 'receivings')]
     #[Menu(title: 'Получения')]
-    public function index(): Response
+    public function index(ReceivingRepository $receivingRepository): Response
     {
-        $arr = [
-            [1, 2, 3, 4, 5],
-            [6, 7, 8, 9, 10],
-        ];
+        $receivings = $receivingRepository->findAll();
+        $table = [];
+        foreach ($receivings as $receiving)
+        {
+            $table[] = [
+                $receiving->getWorker()->getName(),
+                $receiving->getWorkClothing()->getType(),
+                $receiving->getDate()->format('d/m/Y')
+            ];
+        }
+        $headers = ['ФИО работника', 'Вид спецодежды', 'Дата'];
         $m = new MenuCreator;
-        $headers = ['A', 'B', 'C', 'D', 'E'];
         return $this->render('table.html.twig', [
             'title' => 'Получения',
-            'items' => $arr,
+            'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('receivings'),
         ]);

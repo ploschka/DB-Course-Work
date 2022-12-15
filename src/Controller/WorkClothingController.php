@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\WorkClothingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,19 +11,26 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WorkClothingController extends AbstractController
 {
-    #[Route(path: '/clothing', name: 'clothing')]
+    #[Route('/clothing', name: 'clothing')]
     #[Menu(title: 'Спецодежда')]
-    public function index(): Response
+    public function index(WorkClothingRepository $workClothingRepository): Response
     {
-        $arr = [
-            [1, 2, 3, 4, 5],
-            [6, 7, 8, 9, 10],
-        ];
+        $clothing = $workClothingRepository->findAll();
+        $table = [];
+        foreach ($clothing as $item)
+        {
+            $table[] = [
+                $item->getId(),
+                $item->getType(),
+                $item->getPrice(),
+                $item->getWearTime()
+            ];
+        }
+        $headers = ['Идентификатор', 'Вид', 'Цена', 'Время носки'];
         $m = new MenuCreator;
-        $headers = ['A', 'B', 'C', 'D', 'E'];
         return $this->render('table.html.twig', [
             'title' => 'Спецодежда',
-            'items' => $arr,
+            'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('clothing'),
         ]);
