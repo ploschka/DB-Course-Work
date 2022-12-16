@@ -22,7 +22,6 @@ class Department
     private Collection $workers;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Worker $chief = null;
 
     public function __construct()
@@ -82,7 +81,7 @@ class Department
         return $this->chief;
     }
 
-    public function setChief(Worker $chief): self
+    public function setChief(?Worker $chief): self
     {
         $this->chief = $chief;
 

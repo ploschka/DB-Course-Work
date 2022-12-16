@@ -21,7 +21,7 @@ class DepartmentController extends AbstractController
         {
             $table[] = [
                 $department->getName(),
-                $department->getChiefName()
+                $department->getChief()->getName(),
             ];
         }
         $headers = ['Название', 'ФИО начальника'];
