@@ -9,9 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/department')]
 class DepartmentController extends AbstractController
 {
-    #[Route('/department', name: 'department')]
+    #[Route('/list', name: 'department-list', methods: ['GET'])]
     #[Menu(title: 'Цеха')]
     public function index(DepartmentRepository $departmentRepository): Response
     {
@@ -19,9 +20,10 @@ class DepartmentController extends AbstractController
         $table = [];
         foreach ($departments as $department)
         {
+            $chief = $department->getChief();
             $table[] = [
                 $department->getName(),
-                $department->getChief()->getName(),
+                isset($chief)? $chief->getName(): 'Нет начальника',
             ];
         }
         $headers = ['Название', 'ФИО начальника'];
@@ -30,7 +32,7 @@ class DepartmentController extends AbstractController
             'title' => 'Цеха',
             'table' => $table,
             'headers' => $headers,
-            'menu' => $m->getMenu('department'),
+            'menu' => $m->getMenu('department-list'),
         ]);
     }
 }

@@ -9,9 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/worker')]
 class WorkerController extends AbstractController
 {
-    #[Route('/workers', name: 'workers')]
+    #[Route('/list', name: 'worker-list', methods: ['GET'])]
     #[Menu(title: 'Работники')]
     public function table(WorkerRepository $workerRepository): Response
     {
@@ -31,7 +32,7 @@ class WorkerController extends AbstractController
             'title' => 'Работники',
             'table' => $table,
             'headers' => $headers,
-            'menu' => $m->getMenu('workers'),
+            'menu' => $m->getMenu('worker-list'),
         ]);
     }
 }

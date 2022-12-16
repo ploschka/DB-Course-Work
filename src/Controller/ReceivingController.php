@@ -9,9 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/receiving')]
 class ReceivingController extends AbstractController
 {
-    #[Route('/receivings', name: 'receivings')]
+    #[Route('/list', name: 'receiving-list', methods: ['GET'])]
     #[Menu(title: 'Получения')]
     public function index(ReceivingRepository $receivingRepository): Response
     {
@@ -31,7 +32,7 @@ class ReceivingController extends AbstractController
             'title' => 'Получения',
             'table' => $table,
             'headers' => $headers,
-            'menu' => $m->getMenu('receivings'),
+            'menu' => $m->getMenu('receiving-list'),
         ]);
     }
 }
