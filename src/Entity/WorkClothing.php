@@ -25,7 +25,7 @@ class WorkClothing
     #[ORM\OneToOne(mappedBy: 'workClothing', cascade: ['persist', 'remove'])]
     private ?Receiving $receiving = null;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

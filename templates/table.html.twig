@@ -4,18 +4,20 @@
 
 {% block body %}
 
-    <table class="table">
-        <tr>
-            {% for header in headers %}
-                <th> {{ header }} </th>
-            {% endfor %}
-        </tr>
-        {% for arr in items %}
+    <div class="table-wrapper">
+        <table class="table">
             <tr>
-                {% for item in arr %}
-                    <td>{{ item }}</td>
+                {% for header in headers %}
+                    <th> {{ header }} </th>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </table>
+            {% for item in table %}
+                <tr>
+                    {% for data in item %}
+                        <td>{{ data }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

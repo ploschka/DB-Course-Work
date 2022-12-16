@@ -3,7 +3,7 @@ body
     margin: 0;
 }
 
-.navbar
+.menu
 {
     display: flex;
     justify-content: flex-start;
@@ -27,7 +27,7 @@ body
             text-align: center;
         }
 
-        &:hover, &-curr
+        &:hover, &.active
         {
             color: #73BDC0;
             background-color: #561615;
@@ -38,14 +38,16 @@ body
 
 .table-wrapper
 {
-    background-color: antiquewhite;
+    $bord: solid thin black;
     padding: 5px;
     table
     {
-        border: solid thin black;
+        border: $bord;
         td
         {
             text-align: left;
+            border: $bord;
+            min-width: 80px;
         }
         th
         {
