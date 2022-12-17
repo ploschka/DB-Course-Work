@@ -20,10 +20,9 @@ class DepartmentController extends AbstractController
         $table = [];
         foreach ($departments as $department)
         {
-            $chief = $department->getChief();
             $table[] = [
                 $department->getName(),
-                isset($chief)? $chief->getName(): 'Нет начальника',
+                $department->getChiefName(),
             ];
         }
         $headers = ['Название', 'ФИО начальника'];

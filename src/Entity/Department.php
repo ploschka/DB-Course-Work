@@ -21,8 +21,8 @@ class Department
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: Worker::class)]
     private Collection $workers;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Worker $chief = null;
+    #[ORM\Column(length: 50)]
+    private ?string $chief_name = null;
 
     public function __construct()
     {
@@ -76,14 +76,14 @@ class Department
         return $this;
     }
 
-    public function getChief(): ?Worker
+    public function getChiefName(): ?string
     {
-        return $this->chief;
+        return $this->chief_name;
     }
 
-    public function setChief(?Worker $chief): self
+    public function setChiefName(string $chief_name): self
     {
-        $this->chief = $chief;
+        $this->chief_name = $chief_name;
 
         return $this;
     }
