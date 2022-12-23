@@ -1,29 +1,33 @@
 <template>
-    <div v-for="subarr in arr" class="wrap">
-        <div v-for="item in subarr" class="gg">
-            {{ item }}
-        </div>
-    </div>
+    <table>
+        <tr>
+            <th v-for="header in headers">{{ header }}</th>
+        </tr>
+        <TableRow v-for="row in table" :item="row" />
+    </table>
 </template>
 
 <script setup>
+    import TableRow from './TableRow.vue'
     defineProps({
-        arr: Array
+        headers: Array,
+        table: Array,
     });
 </script>
 
-<style>
-    .gg
+<style lang="scss">
+    table
     {
-        background: palevioletred;
-    }
-    .gg:hover
-    {
-        background: palegreen;
-    }
-    .wrap
-    {
-        border: solid 1px black;
-        margin: 3px;
+        border: solid thin black;
+        td
+        {
+            border: solid thin black;
+            text-align: left;
+        }
+        th
+        {
+            @extend td;
+            font-weight: bold;
+        }
     }
 </style>

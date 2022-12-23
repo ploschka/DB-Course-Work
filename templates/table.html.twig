@@ -4,20 +4,7 @@
 
 {% block body %}
 
-    <div class="table-wrapper">
-        <table class="table">
-            <tr>
-                {% for header in headers %}
-                    <th> {{ header }} </th>
-                {% endfor %}
-            </tr>
-            {% for item in table %}
-                <tr>
-                    {% for data in item %}
-                        <td>{{ data }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+    
+
+<div {{ vue_component('Table', { 'headers': headers, 'table': table }) }}></div>
 {% endblock %}
