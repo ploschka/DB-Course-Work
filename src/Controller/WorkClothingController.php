@@ -6,6 +6,7 @@ use App\Repository\WorkClothingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -34,6 +35,14 @@ class WorkClothingController extends AbstractController
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('clothing-list'),
+        ]);
+    }
+
+    #[Route('/request', name: 'clothing-request', methods: ['POST'])]
+    public function request(): JsonResponse
+    {
+        return $this->json([
+            
         ]);
     }
 }

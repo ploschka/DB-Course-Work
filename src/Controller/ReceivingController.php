@@ -6,6 +6,7 @@ use App\Repository\ReceivingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,6 +34,14 @@ class ReceivingController extends AbstractController
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('receiving-list'),
+        ]);
+    }
+
+    #[Route('/request', name: 'receiving-request', methods: ['POST'])]
+    public function request(): JsonResponse
+    {
+        return $this->json([
+            
         ]);
     }
 }

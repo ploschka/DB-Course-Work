@@ -6,6 +6,7 @@ use App\Repository\WorkerRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,6 +34,14 @@ class WorkerController extends AbstractController
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('worker-list'),
+        ]);
+    }
+
+    #[Route('/request', name: 'worker-request', methods: ['POST'])]
+    public function request(): JsonResponse
+    {
+        return $this->json([
+            
         ]);
     }
 }
