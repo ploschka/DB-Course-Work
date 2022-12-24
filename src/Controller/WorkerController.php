@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use App\Repository\WorkerRepository;
+use App\Entity\Worker;
 use App\Service\Menu;
 use App\Service\MenuCreator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +16,16 @@ class WorkerController extends AbstractController
 {
     #[Route('/list', name: 'worker-list', methods: ['GET'])]
     #[Menu(title: 'Работники')]
-    public function table(WorkerRepository $workerRepository): Response
+    public function table(EntityManagerInterface $em): Response
     {
-        $workers = $workerRepository->findAll();
+        $qb = $em->createQueryBuilder();
+        $qb->select('w', 'd', 'p')
+           ->from(Worker::class, 'w')
+           ->innerJoin('w.department', 'd')
+           ->innerJoin('w.post', 'p')
+        ;
+        $workers = $qb->getQuery()->getResult();
+        
         $table = [];
         foreach ($workers as $worker)
         {

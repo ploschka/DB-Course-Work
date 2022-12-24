@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use App\Repository\ReceivingRepository;
+use App\Entity\Receiving;
 use App\Service\Menu;
 use App\Service\MenuCreator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +16,16 @@ class ReceivingController extends AbstractController
 {
     #[Route('/list', name: 'receiving-list', methods: ['GET'])]
     #[Menu(title: 'Получения')]
-    public function index(ReceivingRepository $receivingRepository): Response
-    {
-        $receivings = $receivingRepository->findAll();
+    public function index(EntityManagerInterface $em): Response
+    {        
+        $qb = $em->createQueryBuilder();
+        $qb->select('r', 'w', 'c')
+           ->from(Receiving::class, 'r')
+           ->innerJoin('r.worker', 'w')
+           ->innerJoin('r.workClothing', 'c')
+        ;
+        $receivings = $qb->getQuery()->getResult();
+
         $table = [];
         foreach ($receivings as $receiving)
         {
