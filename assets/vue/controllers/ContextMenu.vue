@@ -1,19 +1,16 @@
 <template>
     <ul id="context-menu" :class="cls" ref="menu">
         <li>
-            <button @click="add">Добавить</button>
+            <button @click="optionClicked(0)">Добавить</button>
         </li>
         <li>
-            <button @click="del">Удалить</button>
+            <button @click="optionClicked(1)">Удалить</button>
         </li>
         <li>
-            <button @click="upd">Изменить</button>
+            <button @click="optionClicked(2)">Изменить</button>
         </li>
         <li>
-            <button @click="clo">Закрыть</button>
-        </li>
-        <li v-if="false">
-            <button @click="cnl">Отменить</button>
+            <button @click="hide">Закрыть</button>
         </li>
     </ul>
 </template>
@@ -23,48 +20,34 @@
 
     const cls = ref('')
     const menu = ref(null)
+    const item = ref(null)
+    const mygg = ref(null)
 
     defineExpose({
-        cls,
-        menu,
+        show,
     })
+    
+    const emit = defineEmits(['optionClicked'])
+
+    function show(itm, event, gg)
+    {
+        cls.value = 'active'
+        menu.value.style.left = `${event.clientX + 10}px`
+        menu.value.style.top = `${event.clientY}px`
+        item.value = itm
+        mygg.value = gg.value
+    }
 
     function hide()
     {
         cls.value = ''
     }
 
-    // function add(event)
-    // {
-    //     hide()
-    // }
-
-    // function del(event)
-    // {
-    //     props.item.value.cls = 'data-row deleted'
-    //     cancelable.value = true;
-    //     hide()
-    // }
-
-    // function upd(event)
-    // {
-    //     props.item.value.cls = 'data-row changed'
-    //     cancelable.value = true;
-    //     hide()
-    // }
-
-    function clo(event)
+    function optionClicked(number)
     {
+        emit('optionClicked', number, item, mygg)
         hide()
     }
-
-    // function cnl(event)
-    // {
-    //     id.value.class = 'data-row'
-    //     cancelable.value = false;
-    //     hide()
-    // }
-
 
 </script>
 

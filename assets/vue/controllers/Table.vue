@@ -1,10 +1,10 @@
 <template>
-    <ContextMenu ref="ctxmenu"/>
+    <ContextMenu ref="ctxmenu" @option-clicked="option"/>
     <table oncontextmenu="return false;">
         <tr>
             <th v-for="header in headers">{{ header }}</th>
         </tr>
-        <TableRow v-for="row in table" :item="row" :ctxm="ctxmenu"/>
+        <TableRow v-for="row in table" :item="row" :ctxm="ctxmenu" @menu="ctx"/>
     </table>
 </template>
 
@@ -20,12 +20,32 @@
 
     const ctxmenu = ref(null)
 
+    function ctx(item, event, gg)
+    {
+        ctxmenu.value.show(item, event, gg)
+    }
+
+    function option(number, item, gg)
+    {
+        switch (number)
+        {
+            case 0:
+                gg.value.setAttribute('class', 'data-row added')
+                break
+            case 1:
+                gg.value.setAttribute('class', 'data-row deleted')
+                break
+            case 2:
+                gg.value.setAttribute('class', 'data-row updated')
+                break
+        }
+    }
+
 </script>
 
 <style lang="scss">
     table
     {
-        border: solid thin black;
         margin: 5px;
         td
         {

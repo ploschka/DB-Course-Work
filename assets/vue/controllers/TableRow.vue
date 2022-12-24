@@ -1,5 +1,5 @@
 <template>
-    <tr :class="cls" @contextmenu="ctx">
+    <tr :class="cls" @contextmenu="ctx" ref="gg">
         <td v-for="data in props.item">{{ data }}</td>
     </tr>
 </template>
@@ -8,14 +8,14 @@
     import { ref } from 'vue'
 
     const props = defineProps(['item', 'ctxm'])
+    const emit = defineEmits(['menu'])
 
     const cls = ref('data-row')
+    const gg = ref(null)
 
     function ctx(event)
     {
-        props.ctxm.cls = 'active'
-        props.ctxm.menu.style.top = `${event.clientY}px`
-        props.ctxm.menu.style.left = `${event.clientX + 10}px`
+        emit('menu', props.item, event, gg)
     }
 </script>
 
@@ -38,7 +38,7 @@
         background-color: palevioletred;
     }
 
-    .changed
+    .updated
     {
         background-color: palegoldenrod;
     }
