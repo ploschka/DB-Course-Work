@@ -7,6 +7,7 @@
         "@symfony/ux-vue": "file:vendor/symfony/ux-vue/assets",
         "@symfony/webpack-encore": "^4.0.0",
         "core-js": "^3.23.0",
+        "datatables.net": "^1.13.1",
         "node-sass": "^8.0.0",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^13.2.0",
@@ -24,5 +25,9 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress"
     },
-    "dependencies": {}
+    "dependencies": {
+        "datatables.net-buttons-dt": "^2.3.3",
+        "datatables.net-dt": "^1.13.1",
+        "datatables.net-select-dt": "^1.5.0"
+    }
 }
