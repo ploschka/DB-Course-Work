@@ -7,6 +7,7 @@ use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -37,7 +38,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/request', name: 'post-request', methods: ['POST'])]
-    public function request(): JsonResponse
+    public function request(Request $request): JsonResponse
     {
         return $this->json([
             
