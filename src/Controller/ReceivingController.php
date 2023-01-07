@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Receiving;
+use App\Entity\WorkClothing;
+use App\Entity\Worker;
 use App\Service\Menu;
 use App\Service\MenuCreator;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +36,9 @@ class ReceivingController extends AbstractController
             $table[] = [
                 $receiving->getWorker()->getName(),
                 $receiving->getWorkClothing()->getType(),
-                $receiving->getDate()->format('d/m/Y')
+                $receiving->getWorkClothing()->getId(),
+                $receiving->getDate()->format('d/m/Y'),
+                $receiving->getSignature(),
             ];
         }
         $headers = ['ФИО работника', 'Вид спецодежды', 'Дата'];
@@ -47,10 +52,55 @@ class ReceivingController extends AbstractController
     }
 
     #[Route('/request', name: 'receiving-request', methods: ['POST'])]
-    public function request(Request $request): JsonResponse
+    public function request(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        return $this->json([
+        $status = \true;
+
+        // $uqb = $em->createQueryBuilder();
+        // $uqb->update(Receiving::class, 'r')
+        //     ->set('r.worker', ':worker')
+        //     ->set('r.date', ':date')
+        //     ->where('r.workClothing = :clothing')
+        // ;
+
+        $dqb = $em->createQueryBuilder();
+        $dqb->delete(Receiving::class, 'r')
+            ->where('r.workClothing in (:arr)')
+        ;
+
+        $req = \json_decode($request->getContent(), \true);
+
+        if ($req['add']['status'])
+        {
+            foreach ($req['add']['rows'] as $row)
+            {
+                $worker = $em->find(Worker::class, $row['worker']);
+                $clothing = $em->find(WorkClothing::class, $row['clothing']);
+                $date = DateTime::createFromFormat('d/m/Y', $row['date']);
+                $signature = $row['signature'];
+
+                $receiving = new Receiving();
+                $receiving->setWorker($worker)
+                          ->setWorkClothing($clothing)
+                          ->setDate($date)
+                          ->setSignature($signature)
+                ;
+                $em->persist($receiving);
+            }
+            $em->flush();
+        }
+        // if ($req['update']['status'])
+        // {
             
+        // }
+        if ($req['delete']['status'])
+        {
+            $delIds = $req['delete']['rows'];
+            $dqb->getQuery()->execute(["arr" => $delIds]);
+        }
+        
+        return $this->json([
+            "done" => $status            
         ]);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\WorkClothing;
 use App\Repository\WorkClothingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,10 +42,55 @@ class WorkClothingController extends AbstractController
     }
 
     #[Route('/request', name: 'clothing-request', methods: ['POST'])]
-    public function request(Request $request): JsonResponse
+    public function request(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        return $this->json([
+        $status = \true;
+
+        // $uqb = $em->createQueryBuilder();
+        // $uqb->update(Department::class, 'd')
+        //     ->set('r.worker', ':worker')
+        //     ->set('r.date', ':date')
+        //     ->where('r.workClothing = :clothing')
+        // ;
+
+        $dqb = $em->createQueryBuilder();
+        $dqb->delete(WorkClothing::class, 'c')
+            ->where('c.id in (:arr)')
+        ;
+
+        $req = \json_decode($request->getContent(), \true);
+
+        if ($req['add']['status'])
+        {
+            foreach ($req['add']['rows'] as $row)
+            {
+                $id = $row['id'];
+                $type = $row['type'];
+                $time = $row['time'];
+                $price = $row['price'];
+
+                $clothing = new WorkClothing();
+                $clothing->setId($id)
+                         ->setType($type)
+                         ->setWearTime($time)
+                         ->setPrice($price)
+                ;
+                $em->persist($clothing);
+            }
+            $em->flush();
+        }
+        // if ($req['update']['status'])
+        // {
             
+        // }
+        if ($req['delete']['status'])
+        {
+            $delIds = $req['delete']['rows'];
+            $dqb->getQuery()->execute(["arr" => $delIds]);
+        }
+        
+        return $this->json([
+            "done" => $status            
         ]);
     }
 }
