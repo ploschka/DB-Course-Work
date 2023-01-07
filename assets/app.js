@@ -52,24 +52,12 @@ $( function () {
             buttons: [
                 {
                     text: "Добавить",
-                    action: function ()
-                    {
-                        alert("Добавить")
-                    }
                 },
                 {
                     text: "Изменить",
-                    action: function ()
-                    {
-                        alert("Изменить")
-                    }
                 },
                 {
                     text: "Удалить",
-                    action: function ()
-                    {
-                        alert("Удалить")
-                    }
                 }
             ]
         });
