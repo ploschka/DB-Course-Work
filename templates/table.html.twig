@@ -2,22 +2,25 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block body %}
+{% block body %}    
 
-    <div class="table-wrapper">
-        <table class="table">
+    {# <div {{ vue_component('Table', { 'headers': headers, 'table': table }) }}></div> #}
+    <table id="datatable" class="display compact">
+        <thead>
             <tr>
                 {% for header in headers %}
-                    <th> {{ header }} </th>
+                    <th>{{ header }}</th>
                 {% endfor %}
             </tr>
-            {% for item in table %}
+        </thead>
+        <tbody>
+            {% for row in table %}
                 <tr>
-                    {% for data in item %}
+                    {% for data in row %}
                         <td>{{ data }}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}
-        </table>
-    </div>
+        </tbody>
+    </table>
 {% endblock %}

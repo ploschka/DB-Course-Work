@@ -1,6 +1,18 @@
-body
+*
 {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body
+{
+    font:
+    {
+        family: sans-serif;
+        size: 16px;
+    }
 }
 
 .menu
@@ -16,7 +28,6 @@ body
         height: 40px;
         color:black;
         background-color: paleturquoise;
-        text-decoration: none;
         margin: 3px;
         padding: 3px;
         align-items: center;
@@ -29,37 +40,15 @@ body
 
         &:hover, &.active
         {
-            color: #73BDC0;
-            background-color: #561615;
+            background-color: #67E46F;
             text-decoration: underline;
-        }
-    }
-}
-
-.table-wrapper
-{
-    $bord: solid thin black;
-    padding: 5px;
-    table
-    {
-        border: $bord;
-        td
-        {
-            text-align: left;
-            border: $bord;
-            min-width: 80px;
-        }
-        th
-        {
-            @extend td;
-            font-weight: bold;
         }
     }
 }
 
 @media (max-width: 500px)
 {
-    .navbar
+    .menu
     {
         flex-direction: column;
         align-items: stretch;

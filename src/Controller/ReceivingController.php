@@ -36,9 +36,7 @@ class ReceivingController extends AbstractController
             $table[] = [
                 $receiving->getWorker()->getName(),
                 $receiving->getWorkClothing()->getType(),
-                $receiving->getWorkClothing()->getId(),
                 $receiving->getDate()->format('d/m/Y'),
-                $receiving->getSignature(),
             ];
         }
         $headers = ['ФИО работника', 'Вид спецодежды', 'Дата'];
