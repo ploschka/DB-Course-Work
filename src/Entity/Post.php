@@ -22,7 +22,7 @@ class Post
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $discount = null;
 
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Worker::class)]
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Worker::class, orphanRemoval: true)]
     private Collection $workers;
 
     public function __construct()

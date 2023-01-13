@@ -19,11 +19,11 @@ class Worker
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'workers')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Post $post = null;
 
     #[ORM\ManyToOne(inversedBy: 'workers')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Department $department = null;
 
     #[ORM\OneToMany(mappedBy: 'worker', targetEntity: Receiving::class)]

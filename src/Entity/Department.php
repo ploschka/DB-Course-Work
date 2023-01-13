@@ -18,7 +18,7 @@ class Department
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'department', targetEntity: Worker::class)]
+    #[ORM\OneToMany(mappedBy: 'department', targetEntity: Worker::class, orphanRemoval: true)]
     private Collection $workers;
 
     #[ORM\Column(length: 50)]

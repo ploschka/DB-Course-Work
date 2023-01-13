@@ -10,12 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Receiving
 {
     #[ORM\ManyToOne(inversedBy: 'receivings')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Worker $worker = null;
 
     #[ORM\Id]
     #[ORM\OneToOne(inversedBy: 'receiving', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?WorkClothing $workClothing = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

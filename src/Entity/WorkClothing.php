@@ -22,7 +22,7 @@ class WorkClothing
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(mappedBy: 'workClothing', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'workClothing', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Receiving $receiving = null;
 
     public function getId(): ?string
