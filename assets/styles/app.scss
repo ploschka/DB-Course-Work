@@ -18,8 +18,7 @@ body
 .menu
 {
     display: flex;
-    justify-content: flex-start;
-    background-color: navy;
+    justify-content: space-between;
     padding: 5px;
     &-item
     {
@@ -27,12 +26,13 @@ body
         width: 120px;
         height: 40px;
         color:black;
-        background-color: paleturquoise;
         margin: 3px;
         padding: 3px;
         align-items: center;
         justify-content: center;
-        border-radius: 10px;
+        border-radius: 20px 5px;
+        border: solid 3px navy;
+        transition: 0.5s;
         div
         {
             text-align: center;
@@ -40,8 +40,19 @@ body
 
         &:hover, &.active
         {
-            background-color: #67E46F;
-            text-decoration: underline;
+            background-color: navy;
+            color:white;
+        }
+    }
+
+    &-block
+    {
+        display: flex;
+        justify-content: flex-start;
+
+        &.reverse
+        {
+            justify-content: flex-end;
         }
     }
 }

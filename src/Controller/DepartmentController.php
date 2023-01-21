@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DepartmentController extends AbstractController
 {
     #[Route('/list', name: 'department-list', methods: ['GET'])]
-    #[Menu(title: 'Цеха')]
+    #[Menu(title: 'Цеха', order: 1, role: 'ROLE_DEPARTMENT')]
     public function index(DepartmentRepository $departmentRepository): Response
     {
         $departments = $departmentRepository->findAll();

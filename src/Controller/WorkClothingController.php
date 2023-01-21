@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class WorkClothingController extends AbstractController
 {
     #[Route('/list', name: 'clothing-list', methods: ['GET'])]
-    #[Menu(title: 'Спецодежда')]
+    #[Menu(title: 'Спецодежда', order: 5, role: 'ROLE_CLOTHING')]
     public function index(WorkClothingRepository $workClothingRepository): Response
     {
         $clothing = $workClothingRepository->findAll();

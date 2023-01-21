@@ -37,8 +37,18 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/department, roles: ROLE_DEPARTMENT }
+        - { path: ^/post, roles: ROLE_POST }
+        - { path: ^/worker, roles: ROLE_WORKER }
+        - { path: ^/clothing, roles: ROLE_CLOTHING }
+        - { path: ^/receiving, roles: ROLE_RECEIVING }
+    
+    role_hierarchy:
+        ROLE_HR: [ROLE_WORKER, ROLE_DEPARTMENT, ROLE_POST]
+        ROLE_DIRECTOR: ROLE_DEPARTMENT
+        ROLE_ACCOUNTANT: ROLE_REPORT
+        ROLE_STOREKEEPER: [ROLE_CLOTHING, ROLE_RECEIVING]
+        ROLE_ADMIN: [ROLE_HR, ROLE_DIRECTOR, ROLE_ACCOUNTANT, ROLE_STOREKEEPER]
 
 when@test:
     security:

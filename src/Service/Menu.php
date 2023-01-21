@@ -7,5 +7,5 @@ use Attribute;
 #[Attribute()]
 class Menu
 {
-    public function __construct(string $title){}
+    public function __construct(string $title, int $order, string $role){}
 }

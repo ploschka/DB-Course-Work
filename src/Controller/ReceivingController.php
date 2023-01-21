@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReceivingController extends AbstractController
 {
     #[Route('/list', name: 'receiving-list', methods: ['GET'])]
-    #[Menu(title: 'Получения')]
+    #[Menu(title: 'Получения', order: 6, role: 'ROLE_RECEIVING')]
     public function index(EntityManagerInterface $em): Response
     {        
         $qb = $em->createQueryBuilder();

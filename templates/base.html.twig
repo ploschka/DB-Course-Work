@@ -13,19 +13,35 @@
         {% endblock %}
     </head>
     <body>
-        <div class="menu">
-            {% for item in menu %}
-                {% if item.active %}
-                    {% set curr = 'active' %}
+        {% block menu %}
+            <div class="menu">
+                <div class="menu-block">
+                    {% for item in menu %}
+                        {% if is_granted(item.role) %}                    
+                            {% if item.active %}
+                                {% set curr = 'active' %}
+                            {% else %}
+                                {% set curr = '' %}
+                            {% endif %}
+                            
+                            <a class="menu-item {{ curr }}" href="{{ url(item.path) }}" style="order: {{ item.order }};">
+                                <div>{{ item.title }}</div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% set t = 'Выйти'%}
+                    {% set u = 'logout'%}
                 {% else %}
-                    {% set curr = '' %}
+                    {% set t = 'Войти'%}
+                    {% set u = 'login'%}
                 {% endif %}
-                
-                <a class="menu-item {{ curr }}" href="{{ url(item.path) }}">
-                    <div>{{ item.title }}</div>
-                </a>
-            {% endfor %}
-        </div>
+                <div class="menu-block reverse">            
+                    <a class="menu-item" href="{{ url(u) }}"><div>{{ t }}</div></a>
+                </div>
+            </div>
+        {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>

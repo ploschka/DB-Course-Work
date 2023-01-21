@@ -37,6 +37,8 @@ class MenuCreator
                     $this->paths[] = [
                         'title' => $menuArgs['title'],
                         'path' => $routeArgs['name'],
+                        'role' => $menuArgs['role'],
+                        'order' => $menuArgs['order'],
                     ];
                 }
 

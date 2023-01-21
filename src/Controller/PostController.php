@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     #[Route('/list', name: 'post-list', methods: ['GET'])]
-    #[Menu(title: 'Должности')]
+    #[Menu(title: 'Должности', order: 2, role: 'ROLE_POST')]
     public function index(PostRepository $postRepository): Response
     {
         $posts = $postRepository->findAll();

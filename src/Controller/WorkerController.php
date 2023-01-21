@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class WorkerController extends AbstractController
 {
     #[Route('/list', name: 'worker-list', methods: ['GET'])]
-    #[Menu(title: 'Работники')]
+    #[Menu(title: 'Работники', order: 3, role: 'ROLE_WORKER')]
     public function table(EntityManagerInterface $em): Response
     {
         $qb = $em->createQueryBuilder();

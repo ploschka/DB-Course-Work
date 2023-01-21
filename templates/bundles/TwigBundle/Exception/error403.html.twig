@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block menu %}{% endblock %}
+
+{% block body %}
+    <h1>Доступ запрещён</h1>
+
+    <p>
+        У вас не хватает прав на доступ к указанному ресурсу.
+    </p>
+    <p><a href="{{ path('index') }}">На главную страницу</a></p>
+{% endblock %}

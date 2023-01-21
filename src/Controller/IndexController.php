@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Menu;
 use App\Service\MenuCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'index')]
+    #[Menu(title: 'Главная', order: 0, role:"PUBLIC_ACCESS")]
     public function index(): Response
     {
         $m = new MenuCreator;

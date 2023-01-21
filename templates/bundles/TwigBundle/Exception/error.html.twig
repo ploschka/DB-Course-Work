@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block menu %}{% endblock %}
+
+{% block body %}
+    <h1>Непредвиденная ошибка</h1>
+
+    <p>
+        Код ошибки: {{ exception.getStatusCode() }}
+    </p>
+    <p><a href="{{ path('index') }}">На главную страницу</a></p>
+{% endblock %}
