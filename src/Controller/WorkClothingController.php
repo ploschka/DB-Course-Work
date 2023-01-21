@@ -78,6 +78,7 @@ class WorkClothingController extends AbstractController
                 $em->persist($clothing);
             }
             $em->flush();
+            $em->clear();
         }
         // if ($req['update']['status'])
         // {

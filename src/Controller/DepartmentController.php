@@ -72,6 +72,7 @@ class DepartmentController extends AbstractController
                 $em->persist($department);
             }
             $em->flush();
+            $em->clear();
         }
         // if ($req['update']['status'])
         // {

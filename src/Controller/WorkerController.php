@@ -83,6 +83,7 @@ class WorkerController extends AbstractController
                 $em->persist($worker);
             }
             $em->flush();
+            $em->clear();
         }
         // if ($req['update']['status'])
         // {

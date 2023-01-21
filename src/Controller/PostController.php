@@ -72,6 +72,7 @@ class PostController extends AbstractController
                 $em->persist($post);
             }
             $em->flush();
+            $em->clear();
         }
         // if ($req['update']['status'])
         // {

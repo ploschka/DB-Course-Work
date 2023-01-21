@@ -86,6 +86,7 @@ class ReceivingController extends AbstractController
                 $em->persist($receiving);
             }
             $em->flush();
+            $em->clear();
         }
         // if ($req['update']['status'])
         // {
