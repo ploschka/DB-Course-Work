@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,16 +28,43 @@ class PostController extends AbstractController
         {
             $table[] = [
                 $post->getName(),
+                $post->getId(),
                 $post->getDiscount(),
             ];
         }
-        $headers = ['Название', 'Скидка'];
+        $headers = ['Название', 'Идентификатор', 'Скидка'];
         $m = new MenuCreator;
         return $this->render('table.html.twig', [
             'title' => 'Должности',
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('post-list'),
+        ]);
+    }
+
+    #[Route('/add', name: 'post-add')]
+    public function add(Request $request, EntityManagerInterface $em): Response
+    {
+        $post = new Post;
+        $form = $this->createForm(PostType::class, $post)
+        ->add('submit', SubmitType::class)
+    ;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $post = $form->getData();
+            $em->persist($post);
+            $em->flush();
+            return $this->redirectToRoute('post-add');
+        }
+
+
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Добавить должность',
+            'menu' => $m->getMenu('post-list'),
+            'form' => $form,
         ]);
     }
 

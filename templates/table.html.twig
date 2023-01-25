@@ -16,6 +16,7 @@
         <tbody>
             {% for row in table %}
                 <tr>
+                    {% set hidden = true %}
                     {% for data in row %}
                         <td>{{ data }}</td>
                     {% endfor %}

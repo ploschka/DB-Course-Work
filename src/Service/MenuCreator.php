@@ -46,7 +46,7 @@ class MenuCreator
         }
     }
 
-    public function getMenu(string $pathName)
+    public function getMenu(string $pathName = null)
     {
         foreach ($this->paths as &$path)
         {

@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Department;
+use App\Form\DepartmentType;
 use App\Repository\DepartmentRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,16 +28,43 @@ class DepartmentController extends AbstractController
         {
             $table[] = [
                 $department->getName(),
+                $department->getId(),
                 $department->getChiefName(),
             ];
         }
-        $headers = ['Название', 'ФИО начальника'];
+        $headers = ['Название', 'Идентификатор', 'ФИО начальника'];
         $m = new MenuCreator;
         return $this->render('table.html.twig', [
             'title' => 'Цеха',
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('department-list'),
+        ]);
+    }
+
+    #[Route('/add', name: 'department-add')]
+    public function add(Request $request, EntityManagerInterface $em): Response
+    {
+        $department = new Department;
+        $form = $this->createForm(DepartmentType::class, $department)
+        ->add('submit', SubmitType::class)
+    ;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $department = $form->getData();
+            $em->persist($department);
+            $em->flush();
+            return $this->redirectToRoute('department-add');
+        }
+
+
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Добавить цех',
+            'menu' => $m->getMenu('department-list'),
+            'form' => $form,
         ]);
     }
 

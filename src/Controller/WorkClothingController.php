@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\WorkClothing;
+use App\Form\WorkClothingType;
 use App\Repository\WorkClothingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +40,32 @@ class WorkClothingController extends AbstractController
             'table' => $table,
             'headers' => $headers,
             'menu' => $m->getMenu('clothing-list'),
+        ]);
+    }
+
+    #[Route('/add', name: 'clothing-add')]
+    public function add(Request $request, EntityManagerInterface $em): Response
+    {
+        $clothing = new WorkClothing;
+        $form = $this->createForm(WorkClothingType::class, $clothing)
+        ->add('submit', SubmitType::class)
+    ;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $clothing = $form->getData();
+            $em->persist($clothing);
+            $em->flush();
+            return $this->redirectToRoute('clothing-add');
+        }
+
+
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Добавить спецодежду',
+            'menu' => $m->getMenu('clothing-list'),
+            'form' => $form,
         ]);
     }
 
