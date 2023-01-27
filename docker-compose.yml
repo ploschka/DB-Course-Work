@@ -32,6 +32,8 @@ services:
       - db-data:/var/lib/mysql:rw
     networks:
       - app-network
+    ports:
+      - 3306:3306
 ###< doctrine/doctrine-bundle ###
 
 networks:
