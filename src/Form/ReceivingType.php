@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Receiving;
+use App\Entity\WorkClothing;
 use App\Entity\Worker;
+use App\Repository\WorkClothingRepository;
 use App\Repository\WorkerRepository;
 use DateTime;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -35,10 +37,26 @@ class ReceivingType extends AbstractType
                         return [];
                 },
             ])
-            ->add('workClothing', TextType::class, [
-                'mapped' => \false,
-                'label' => 'Идентификатор спецодежды',
-                'data' => $options['workClothing_value'],
+            ->add('workClothing', EntityType::class, [
+                'class' => WorkClothing::class,
+                'choice_label' => 'id',
+                'query_builder' => function (WorkClothingRepository $workClothingRepository)
+                {
+                    return $workClothingRepository->createQueryBuilder('c')
+                        ->orderBy('c.id', 'ASC');
+                },
+                'label' => 'Идентификатор спецодежды',                
+                'choice_attr' => function ($choice, $key, $value) use ($options)
+                {
+                    if ($choice->getId() == $options['clothing_id_value'])
+                        return ['selected' => true];
+                    else
+                        return [];
+                },
+                'choice_value' => function (?WorkClothing $entity)
+                {
+                    return $entity ? $entity->getId() : '';
+                },
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
@@ -57,9 +75,9 @@ class ReceivingType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Receiving::class,
             'worker_name_value' => null,
-            'workClothing_value' => null,
+            'clothing_id_value' => null,
             'date_value' => null,
-            'signature_value' => null,
+            'signature_value' => null
         ]);
     }
 }
