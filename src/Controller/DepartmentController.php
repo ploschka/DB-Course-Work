@@ -8,6 +8,7 @@ use App\Repository\DepartmentRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,9 +28,9 @@ class DepartmentController extends AbstractController
         foreach ($departments as $department)
         {
             $table[] = [
-                $department->getName(),
-                $department->getId(),
-                $department->getChiefName(),
+                [$department->getName(), ['data-tag' => 'name']],
+                [$department->getId(), ['data-tag' => 'id']],
+                [$department->getChiefName(), ['data-tag' => 'chief_name']],
             ];
         }
         $headers = ['Название', 'Идентификатор', 'ФИО начальника'];
@@ -47,16 +48,27 @@ class DepartmentController extends AbstractController
     {
         $department = new Department;
         $form = $this->createForm(DepartmentType::class, $department)
-        ->add('submit', SubmitType::class)
-    ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $department = $form->getData();
-            $em->persist($department);
-            $em->flush();
-            return $this->redirectToRoute('department-add');
+            $em->beginTransaction();
+            try
+            {
+                $department = $form->getData();
+                $em->persist($department);
+                $em->flush();
+                return $this->redirectToRoute('department-add');
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
         }
 
 
@@ -65,6 +77,7 @@ class DepartmentController extends AbstractController
             'title' => 'Добавить цех',
             'menu' => $m->getMenu('department-list'),
             'form' => $form,
+            'error' => $err,
         ]);
     }
 
@@ -96,8 +109,7 @@ class DepartmentController extends AbstractController
 
                 $department = new Department();
                 $department->setName($name)
-                           ->setChiefName($chiefname)
-                ;
+                    ->setChiefName($chiefname);
                 $em->persist($department);
             }
             $em->flush();
@@ -105,16 +117,16 @@ class DepartmentController extends AbstractController
         }
         // if ($req['update']['status'])
         // {
-            
+
         // }
         if ($req['delete']['status'])
         {
             $delIds = $req['delete']['rows'];
             $dqb->getQuery()->execute(["arr" => $delIds]);
         }
-        
+
         return $this->json([
-            "done" => $status            
+            "done" => $status
         ]);
     }
 }

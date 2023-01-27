@@ -8,6 +8,7 @@ use App\Repository\WorkClothingRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,10 +28,10 @@ class WorkClothingController extends AbstractController
         foreach ($clothing as $item)
         {
             $table[] = [
-                $item->getId(),
-                $item->getType(),
-                $item->getPrice(),
-                $item->getWearTime()
+                [$item->getId(), ['data-tag' => 'id']],
+                [$item->getType(), ['data-tag' => 'type']],
+                [$item->getPrice(), ['data-tag' => 'price']],
+                [$item->getWearTime(), ['data-tag' => 'wearTime']],
             ];
         }
         $headers = ['Идентификатор', 'Вид', 'Цена', 'Время носки'];
@@ -48,24 +49,36 @@ class WorkClothingController extends AbstractController
     {
         $clothing = new WorkClothing;
         $form = $this->createForm(WorkClothingType::class, $clothing)
-        ->add('submit', SubmitType::class)
-    ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $clothing = $form->getData();
-            $em->persist($clothing);
-            $em->flush();
-            return $this->redirectToRoute('clothing-add');
+            $em->beginTransaction();
+            try
+            {
+                $clothing = $form->getData();
+                $em->persist($clothing);
+                $em->flush();
+                $em->commit();
+                return $this->redirectToRoute('clothing-add');
+            }
+            catch (Exception $e)
+            {
+                $em->rollBack();
+                $err = $e->getMessage();
+            }
         }
-
 
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить спецодежду',
             'menu' => $m->getMenu('clothing-list'),
             'form' => $form,
+            'error' => $err,
         ]);
     }
 
@@ -99,10 +112,9 @@ class WorkClothingController extends AbstractController
 
                 $clothing = new WorkClothing();
                 $clothing->setId($id)
-                         ->setType($type)
-                         ->setWearTime($time)
-                         ->setPrice($price)
-                ;
+                    ->setType($type)
+                    ->setWearTime($time)
+                    ->setPrice($price);
                 $em->persist($clothing);
             }
             $em->flush();
@@ -110,16 +122,25 @@ class WorkClothingController extends AbstractController
         }
         // if ($req['update']['status'])
         // {
-            
+
         // }
         if ($req['delete']['status'])
         {
+            $em->beginTransaction();
             $delIds = $req['delete']['rows'];
-            $dqb->getQuery()->execute(["arr" => $delIds]);
+            try
+            {
+                $dqb->getQuery()->execute(["arr" => $delIds]);
+                $em->commit();
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+            }
         }
-        
+
         return $this->json([
-            "done" => $status            
+            "done" => $status
         ]);
     }
 }

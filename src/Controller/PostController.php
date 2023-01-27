@@ -8,6 +8,7 @@ use App\Repository\PostRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,9 +28,9 @@ class PostController extends AbstractController
         foreach ($posts as $post)
         {
             $table[] = [
-                $post->getName(),
-                $post->getId(),
-                $post->getDiscount(),
+                [$post->getName(), ['data-tag' => 'name']],
+                [$post->getId(), ['data-tag' => 'id']],
+                [$post->getDiscount(), ['data-tag' => 'discount']],
             ];
         }
         $headers = ['Название', 'Идентификатор', 'Скидка'];
@@ -47,16 +48,28 @@ class PostController extends AbstractController
     {
         $post = new Post;
         $form = $this->createForm(PostType::class, $post)
-        ->add('submit', SubmitType::class)
-    ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $post = $form->getData();
-            $em->persist($post);
-            $em->flush();
-            return $this->redirectToRoute('post-add');
+            $em->beginTransaction();
+            try
+            {
+                $post = $form->getData();
+                $em->persist($post);
+                $em->flush();
+                $em->commit();
+                return $this->redirectToRoute('post-add');
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
         }
 
 
@@ -65,6 +78,7 @@ class PostController extends AbstractController
             'title' => 'Добавить должность',
             'menu' => $m->getMenu('post-list'),
             'form' => $form,
+            'error' => $err,
         ]);
     }
 
@@ -96,8 +110,7 @@ class PostController extends AbstractController
 
                 $post = new Post();
                 $post->setName($name)
-                     ->setDiscount($discount)
-                ;
+                    ->setDiscount($discount);
                 $em->persist($post);
             }
             $em->flush();
@@ -105,16 +118,16 @@ class PostController extends AbstractController
         }
         // if ($req['update']['status'])
         // {
-            
+
         // }
         if ($req['delete']['status'])
         {
             $delIds = $req['delete']['rows'];
             $dqb->getQuery()->execute(["arr" => $delIds]);
         }
-        
+
         return $this->json([
-            "done" => $status            
+            "done" => $status
         ]);
     }
 }

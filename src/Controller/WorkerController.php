@@ -11,6 +11,7 @@ use App\Repository\PostRepository;
 use App\Service\Menu;
 use App\Service\MenuCreator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,20 +28,19 @@ class WorkerController extends AbstractController
     {
         $qb = $em->createQueryBuilder();
         $qb->select('w', 'd', 'p')
-           ->from(Worker::class, 'w')
-           ->innerJoin('w.department', 'd')
-           ->innerJoin('w.post', 'p')
-        ;
+            ->from(Worker::class, 'w')
+            ->innerJoin('w.department', 'd')
+            ->innerJoin('w.post', 'p');
         $workers = $qb->getQuery()->getResult();
-        
+
         $table = [];
         foreach ($workers as $worker)
         {
             $table[] = [
-                $worker->getName(),
-                $worker->getId(),
-                $worker->getDepartment()->getName(),
-                $worker->getPost()->getName(),
+                [$worker->getName(), ['data-tag' => 'name']],
+                [$worker->getId(), ['data-tag' => 'id']],
+                [$worker->getDepartment()->getName(), ['data-tag' => 'department']],
+                [$worker->getPost()->getName(), ['data-tag' => 'post']],
             ];
         }
         $headers = ['ФИО', 'Идентификатор', 'Цех', 'Должность'];
@@ -52,30 +52,42 @@ class WorkerController extends AbstractController
             'menu' => $m->getMenu('worker-list'),
         ]);
     }
-    
+
     #[Route('/add', name: 'worker-add')]
     public function add(Request $request, EntityManagerInterface $em): Response
     {
         $worker = new Worker;
         $form = $this->createForm(WorkerType::class, $worker)
-        ->add('submit', SubmitType::class)
-    ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $worker = $form->getData();
-            $em->persist($worker);
-            $em->flush();
-            return $this->redirectToRoute('worker-add');
+            $em->beginTransaction();
+            try
+            {
+                $worker = $form->getData();
+                $em->persist($worker);
+                $em->flush();
+                $em->commit();
+                return $this->redirectToRoute('worker-add');
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
         }
-
 
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить работника',
             'menu' => $m->getMenu('worker-list'),
             'form' => $form,
+            'error' => $err,
         ]);
     }
 
@@ -108,9 +120,8 @@ class WorkerController extends AbstractController
 
                 $worker = new Worker();
                 $worker->setPost($post)
-                         ->setDepartment($department)
-                         ->setName($name)
-                ;
+                    ->setDepartment($department)
+                    ->setName($name);
                 $em->persist($worker);
             }
             $em->flush();
@@ -118,16 +129,16 @@ class WorkerController extends AbstractController
         }
         // if ($req['update']['status'])
         // {
-            
+
         // }
         if ($req['delete']['status'])
         {
             $delIds = $req['delete']['rows'];
             $dqb->getQuery()->execute(["arr" => $delIds]);
         }
-        
+
         return $this->json([
-            "done" => $status            
+            "done" => $status
         ]);
     }
 }

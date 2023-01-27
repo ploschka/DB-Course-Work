@@ -11,6 +11,7 @@ use App\Service\Menu;
 use App\Service\MenuCreator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,26 +25,26 @@ class ReceivingController extends AbstractController
     #[Route('/list', name: 'receiving-list', methods: ['GET'])]
     #[Menu(title: 'Получения', order: 6, role: 'ROLE_RECEIVING')]
     public function index(EntityManagerInterface $em): Response
-    {        
+    {
         $qb = $em->createQueryBuilder();
         $qb->select('r', 'w', 'c')
-           ->from(Receiving::class, 'r')
-           ->innerJoin('r.worker', 'w')
-           ->innerJoin('r.workClothing', 'c')
-        ;
+            ->from(Receiving::class, 'r')
+            ->innerJoin('r.worker', 'w')
+            ->innerJoin('r.workClothing', 'c');
         $receivings = $qb->getQuery()->getResult();
 
         $table = [];
         foreach ($receivings as $receiving)
         {
             $table[] = [
-                $receiving->getWorker()->getName(),
-                $receiving->getWorkClothing()->getId(),
-                $receiving->getWorkClothing()->getType(),
-                $receiving->getDate()->format('Y/m/d'),
+                [$receiving->getWorker()->getName(), ['data-tag' => 'worker_name']],
+                [$receiving->getWorkClothing()->getId(), ['data-tag' => 'id']],
+                [$receiving->getWorkClothing()->getType(), ['data-tag' => 'clothing_type']],
+                [$receiving->getDate()->format('Y/m/d'), ['data-tag' => 'date']],
+                [$receiving->getSignature(), ['data-tag' => 'signature']],
             ];
         }
-        $headers = ['ФИО работника', 'Идентификатор спецодежды', 'Вид спецодежды', 'Дата'];
+        $headers = ['ФИО работника', 'Идентификатор спецодежды', 'Вид спецодежды', 'Дата', 'Подпись'];
         $m = new MenuCreator;
         return $this->render('table.html.twig', [
             'title' => 'Получения',
@@ -58,21 +59,33 @@ class ReceivingController extends AbstractController
     {
         $receiving = new Receiving;
         $form = $this->createForm(ReceivingType::class, $receiving)
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
         ;
+
+        $err = null;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $receiving = $form->getData();
-            $clothingId = $form->get('workClothing')->getData();
-            $clothing = $em->find(Receiving::class, $clothingId);
-            if (\is_null($clothing))
+            $em->beginTransaction();
+            try
             {
-                $receiving->setWorkClothing($em->find(WorkClothing::class, $clothingId));
-                $em->persist($receiving);
-                $em->flush();
-                return $this->redirectToRoute('receiving-add');
+                $receiving = $form->getData();
+                $clothingId = $form->get('workClothing')->getData();
+                $clothing = $em->find(Receiving::class, $clothingId);
+                if (\is_null($clothing))
+                {
+                    $receiving->setWorkClothing($em->find(WorkClothing::class, $clothingId));
+                    $em->persist($receiving);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('receiving-add');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
             }
         }
 
@@ -81,6 +94,7 @@ class ReceivingController extends AbstractController
             'title' => 'Добавить получение',
             'menu' => $m->getMenu('receiving-list'),
             'form' => $form,
+            'error' => $err,
         ]);
     }
 
@@ -114,10 +128,9 @@ class ReceivingController extends AbstractController
 
                 $receiving = new Receiving();
                 $receiving->setWorker($worker)
-                          ->setWorkClothing($clothing)
-                          ->setDate($date)
-                          ->setSignature($signature)
-                ;
+                    ->setWorkClothing($clothing)
+                    ->setDate($date)
+                    ->setSignature($signature);
                 $em->persist($receiving);
             }
             $em->flush();
@@ -125,16 +138,16 @@ class ReceivingController extends AbstractController
         }
         // if ($req['update']['status'])
         // {
-            
+
         // }
         if ($req['delete']['status'])
         {
             $delIds = $req['delete']['rows'];
             $dqb->getQuery()->execute(["arr" => $delIds]);
         }
-        
+
         return $this->json([
-            "done" => $status            
+            "done" => $status
         ]);
     }
 }
