@@ -63,6 +63,7 @@ class ReceivingType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Дата получения',
                 'data' => DateTime::createFromFormat('Y/m/d', $options['date_value'] ?? date('Y/m/d')),
+                'disabled' => \true,
             ])
             ->add('signature', TextType::class, [
                 'label' => 'Подпись',

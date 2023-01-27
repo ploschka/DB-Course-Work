@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('report') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('report') }}
+{% endblock %}
+
+{% block body %}
+
+    {{ form(form) }}
+    <button id="form_button">Кнопка</button>
+    <div id="reportPlace"></div>
+
+{% endblock %}

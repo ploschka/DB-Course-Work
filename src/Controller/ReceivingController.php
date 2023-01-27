@@ -71,6 +71,7 @@ class ReceivingController extends AbstractController
             try
             {
                 $receiving = $form->getData();
+                $receiving->setDate(DateTime::createFromFormat('Y/m/d', date('Y/m/d')));
                 if (\is_null($receiving->getWorkClothing()->getReceiving()))
                 {
                     $em->persist($receiving);
@@ -103,9 +104,10 @@ class ReceivingController extends AbstractController
     #[Route('/update', name: 'receiving-update')]
     public function update(Request $request, EntityManagerInterface $em): Response
     {
+        $clothId = $request->query->get('id');
         $options = [
             'id_field' => true,
-            'id_value' => $request->query->get('id'),
+            'id_value' => $clothId,
             'worker_name_value' => $request->query->get('worker_name'),
             'date_value' => $request->query->get('date'),
             'signature_value' => $request->query->get('signature'),
@@ -122,7 +124,7 @@ class ReceivingController extends AbstractController
             $em->beginTransaction();
             try
             {
-                $receiving = $em->find(Receiving::class, $form->get('id')->getData());
+                $receiving = $em->find(Receiving::class, $clothId);
                 if (\is_null($receiving))
                 {
                     $em->rollback();
@@ -130,9 +132,8 @@ class ReceivingController extends AbstractController
                 }
                 else
                 {
-                    $receiving = new Receiving;
                     $receiving->setWorker($form->get('worker')->getData());
-                    $receiving->setWorkClothing($form->get('workClothing')->getData());
+                    $receiving->setWorkClothing($em->find(WorkClothing::class, $clothId));
                     $receiving->setDate($form->get('date')->getData());
                     $receiving->setSignature($form->get('signature')->getData());
                     $em->persist($receiving);
