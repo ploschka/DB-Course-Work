@@ -45,13 +45,15 @@ $(function () {
             {
                 text: "Изменить",
                 action: function () {
-                    if (selectedRows.length !== 0) {
-                        let r = table.rows(selectedRows)
-                        for (let i = 0; i < r[0].length; i++) {
-                            table.row(r[0][i]).data([1, 1, 1, 1])
-                        }
-                        table.draw();
+                    let children = table.rows(selectedRows).nodes().to$().children();
+                    let params = new URLSearchParams();
+                    for (let i = 0; i < children.length; i++) {
+                        params.append(children[i].getAttribute('data-tag'), children[i].innerHTML)
+                        console.log(children[i].getAttribute('data-tag'), children[i].innerHTML)
                     }
+                    const url = './update?'.concat(params.toString());
+                    console.log(params.toString())
+                    window.location = url;
                 }
             },
             {
@@ -83,6 +85,12 @@ $(function () {
 
                     xhr.send(req)
                 }
+            },
+            {
+                text: "Debug",
+                action: function () {
+                    console.log(selectedRows)
+                }
             }
         ],
         pageLength: 25
@@ -92,7 +100,14 @@ $(function () {
     table.button(2).disable();
 
     table.on('select', function (e, dt, type, indexes) {
-        selectedRows = selectedRows.concat(indexes);
+        if (indexes.length > 1)
+        {
+            selectedRows = indexes;
+        }
+        else
+        {
+            selectedRows = selectedRows.concat(indexes);
+        }
         table.button(2).enable();
 
         if (selectedRows.length > 1) {

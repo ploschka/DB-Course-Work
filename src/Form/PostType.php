@@ -13,6 +13,14 @@ class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['id_field'])
+        {
+            $builder->add('id', IntegerType::class, [
+                'disabled' => true,
+                'data' => $options['id_value'],
+            ]);
+        }
+        
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Название',
@@ -31,6 +39,8 @@ class PostType extends AbstractType
             'data_class' => Post::class,
             'name_value' => null,
             'discount_value' => null,
+            'id_field' => false,
+            'id_value' => null,
         ]);
     }
 }

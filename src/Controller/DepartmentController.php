@@ -62,6 +62,7 @@ class DepartmentController extends AbstractController
                 $department = $form->getData();
                 $em->persist($department);
                 $em->flush();
+                $em->commit();
                 return $this->redirectToRoute('department-add');
             }
             catch (Exception $e)
@@ -71,10 +72,62 @@ class DepartmentController extends AbstractController
             }
         }
 
-
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить цех',
+            'menu' => $m->getMenu('department-list'),
+            'form' => $form,
+            'error' => $err,
+        ]);
+    }
+
+    #[Route('/update', name: 'department-update')]
+    public function update(Request $request, EntityManagerInterface $em): Response
+    {
+        $options = [
+            'id_field' => true,
+            'id_value' => $request->query->get('id'),
+            'name_value' => $request->query->get('name'),
+            'chief_name_value' => $request->query->get('chief_name'),
+        ];
+        $form = $this->createForm(DepartmentType::class, options: $options)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em->beginTransaction();
+            try
+            {
+                $department = $em->find(Department::class, $form->get('id')->getData());
+                if (\is_null($department))
+                {
+                    $em->rollback();
+                    $err = 'Цеха с таким идентификатором не существует';
+                }
+                else
+                {
+                    $department->setName($form->get('name')->getData());
+                    $department->setChiefName($form->get('chief_name')->getData());
+                    $em->persist($department);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('department-list');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
+        }
+        
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Изменить цех',
             'menu' => $m->getMenu('department-list'),
             'form' => $form,
             'error' => $err,

@@ -31,7 +31,7 @@ class WorkClothingController extends AbstractController
                 [$item->getId(), ['data-tag' => 'id']],
                 [$item->getType(), ['data-tag' => 'type']],
                 [$item->getPrice(), ['data-tag' => 'price']],
-                [$item->getWearTime(), ['data-tag' => 'wearTime']],
+                [$item->getWearTime(), ['data-tag' => 'time']],
             ];
         }
         $headers = ['Идентификатор', 'Вид', 'Цена', 'Время носки'];
@@ -76,6 +76,61 @@ class WorkClothingController extends AbstractController
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить спецодежду',
+            'menu' => $m->getMenu('clothing-list'),
+            'form' => $form,
+            'error' => $err,
+        ]);
+    }
+
+    #[Route('/update', name: 'clothing-update')]
+    public function update(Request $request, EntityManagerInterface $em): Response
+    {
+        $options = [
+            'id_field' => true,
+            'id_value' => $request->query->get('id'),
+            'type_value' => $request->query->get('type'),
+            'price_value' => $request->query->get('price'),
+            'wearTime_value' => $request->query->get('time'),
+        ];
+        $form = $this->createForm(WorkClothingType::class, options: $options)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em->beginTransaction();
+            try
+            {
+                $clothing = $em->find(WorkClothing::class, $form->get('id')->getData());
+                if (\is_null($clothing))
+                {
+                    $em->rollback();
+                    $err = 'Спецодежды с таким идентификатором не существует';
+                }
+                else
+                {
+                    $clothing->setType($form->get('type')->getData());
+                    $clothing->setPrice($form->get('price')->getData());
+                    $clothing->setWearTime($form->get('wearTime')->getData());
+                    $em->persist($clothing);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('clothing-list');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
+        }
+        
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Изменить цех',
             'menu' => $m->getMenu('clothing-list'),
             'form' => $form,
             'error' => $err,

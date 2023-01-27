@@ -18,6 +18,7 @@ class WorkClothingType extends AbstractType
             ->add('id', TextType::class, [
                 'label' => 'Идентификатор',
                 'data' => $options['id_value'],
+                'disabled' => $options['id_field']
             ])
             ->add('type', TextType::class, [
                 'label' => 'Вид',
@@ -42,6 +43,7 @@ class WorkClothingType extends AbstractType
             'type_value' => null,
             'price_value' => null,
             'wearTime_value' => null,
+            'id_field' => false,
         ]);
     }
 }

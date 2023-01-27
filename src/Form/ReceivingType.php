@@ -48,7 +48,7 @@ class ReceivingType extends AbstractType
                 'label' => 'Идентификатор спецодежды',                
                 'choice_attr' => function ($choice, $key, $value) use ($options)
                 {
-                    if ($choice->getId() == $options['clothing_id_value'])
+                    if ($choice->getId() == $options['id_value'])
                         return ['selected' => true];
                     else
                         return [];
@@ -57,6 +57,7 @@ class ReceivingType extends AbstractType
                 {
                     return $entity ? $entity->getId() : '';
                 },
+                'disabled' => $options['id_field']
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
@@ -75,9 +76,10 @@ class ReceivingType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Receiving::class,
             'worker_name_value' => null,
-            'clothing_id_value' => null,
             'date_value' => null,
-            'signature_value' => null
+            'signature_value' => null,
+            'id_field' => false,
+            'id_value' => null
         ]);
     }
 }

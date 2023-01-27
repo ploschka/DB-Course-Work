@@ -9,6 +9,7 @@ use App\Repository\DepartmentRepository;
 use App\Repository\PostRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +18,14 @@ class WorkerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['id_field'])
+        {
+            $builder->add('id', IntegerType::class, [
+                'disabled' => true,
+                'data' => $options['id_value'],
+            ]);
+        }
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'ФИО',
@@ -66,6 +75,8 @@ class WorkerType extends AbstractType
             'name_value' => null,
             'department_value' => null,
             'post_value' => null,
+            'id_field' => false,
+            'id_value' => null,
         ]);
     }
 }

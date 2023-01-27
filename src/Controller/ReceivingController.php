@@ -81,7 +81,7 @@ class ReceivingController extends AbstractController
                 else
                 {
                     $em->rollback();
-                    $err = 'Получение спецодежды с данным номером уже создано';
+                    $err = 'Получение спецодежды с таким идентификатором уже создано';
                 }
             }
             catch (Exception $e)
@@ -94,6 +94,63 @@ class ReceivingController extends AbstractController
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить получение',
+            'menu' => $m->getMenu('receiving-list'),
+            'form' => $form,
+            'error' => $err,
+        ]);
+    }
+
+    #[Route('/update', name: 'receiving-update')]
+    public function update(Request $request, EntityManagerInterface $em): Response
+    {
+        $options = [
+            'id_field' => true,
+            'id_value' => $request->query->get('id'),
+            'worker_name_value' => $request->query->get('worker_name'),
+            'date_value' => $request->query->get('date'),
+            'signature_value' => $request->query->get('signature'),
+        ];
+        $form = $this->createForm(ReceivingType::class, options: $options)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em->beginTransaction();
+            try
+            {
+                $receiving = $em->find(Receiving::class, $form->get('id')->getData());
+                if (\is_null($receiving))
+                {
+                    $em->rollback();
+                    $err = 'Получения с таким идентификатором не существует';
+                }
+                else
+                {
+                    $receiving = new Receiving;
+                    $receiving->setWorker($form->get('worker')->getData());
+                    $receiving->setWorkClothing($form->get('workClothing')->getData());
+                    $receiving->setDate($form->get('date')->getData());
+                    $receiving->setSignature($form->get('signature')->getData());
+                    $em->persist($receiving);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('receiving-list');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
+        }
+        
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Изменить цех',
             'menu' => $m->getMenu('receiving-list'),
             'form' => $form,
             'error' => $err,

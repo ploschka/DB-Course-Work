@@ -91,6 +91,61 @@ class WorkerController extends AbstractController
         ]);
     }
 
+    #[Route('/update', name: 'worker-update')]
+    public function update(Request $request, EntityManagerInterface $em): Response
+    {
+        $options = [
+            'id_field' => true,
+            'id_value' => $request->query->get('id'),
+            'name_value' => $request->query->get('name'),
+            'department_value' => $request->query->get('department'),
+            'post_value' => $request->query->get('post'),
+        ];
+        $form = $this->createForm(WorkerType::class, options: $options)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em->beginTransaction();
+            try
+            {
+                $worker = $em->find(Worker::class, $form->get('id')->getData());
+                if (\is_null($worker))
+                {
+                    $em->rollback();
+                    $err = 'Работника с таким идентификатором не существует';
+                }
+                else
+                {
+                    $worker->setName($form->get('name')->getData());
+                    $worker->setDepartment($form->get('department')->getData());
+                    $worker->setPost($form->get('post')->getData());
+                    $em->persist($worker);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('worker-list');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
+        }
+        
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Изменить цех',
+            'menu' => $m->getMenu('worker-list'),
+            'form' => $form,
+            'error' => $err,
+        ]);
+    }
+
     #[Route('/delete', name: 'worker-delete', methods: ['POST'])]
     public function delete(Request $request, EntityManagerInterface $em): JsonResponse
     {

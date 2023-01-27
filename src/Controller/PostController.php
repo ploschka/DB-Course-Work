@@ -72,10 +72,62 @@ class PostController extends AbstractController
             }
         }
 
-
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Добавить должность',
+            'menu' => $m->getMenu('post-list'),
+            'form' => $form,
+            'error' => $err,
+        ]);
+    }
+
+    #[Route('/update', name: 'post-update')]
+    public function update(Request $request, EntityManagerInterface $em): Response
+    {
+        $options = [
+            'id_field' => true,
+            'id_value' => $request->query->get('id'),
+            'name_value' => $request->query->get('name'),
+            'discount_value' => $request->query->get('discount'),
+        ];
+        $form = $this->createForm(PostType::class, options: $options)
+            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
+        ;
+
+        $err = null;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em->beginTransaction();
+            try
+            {
+                $post = $em->find(Post::class, $form->get('id')->getData());
+                if (\is_null($post))
+                {
+                    $em->rollback();
+                    $err = 'Должности с таким идентификатором не существует';
+                }
+                else
+                {
+                    $post->setName($form->get('name')->getData());
+                    $post->setDiscount($form->get('discount')->getData());
+                    $em->persist($post);
+                    $em->flush();
+                    $em->commit();
+                    return $this->redirectToRoute('post-list');
+                }
+            }
+            catch (Exception $e)
+            {
+                $em->rollback();
+                $err = $e->getMessage();
+            }
+        }
+        
+        $m = new MenuCreator;
+        return $this->render('form.html.twig', [
+            'title' => 'Изменить должность',
             'menu' => $m->getMenu('post-list'),
             'form' => $form,
             'error' => $err,
