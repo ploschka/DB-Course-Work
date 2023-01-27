@@ -91,54 +91,35 @@ class WorkerController extends AbstractController
         ]);
     }
 
-    #[Route('/request', name: 'worker-request', methods: ['POST'])]
-    public function request(Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/delete', name: 'worker-delete', methods: ['POST'])]
+    public function delete(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $status = \true;
-
-        // $uqb = $em->createQueryBuilder();
-        // $uqb->update(Department::class, 'd')
-        //     ->set('r.worker', ':worker')
-        //     ->set('r.date', ':date')
-        //     ->where('r.workClothing = :clothing')
-        // ;
-
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Worker::class, 'w')
             ->where('w.id in (:arr)')
         ;
 
         $req = \json_decode($request->getContent(), \true);
+        $status = \true;
+        $error = null;
 
-        if ($req['add']['status'])
+        $em->beginTransaction();
+        try
         {
-            foreach ($req['add']['rows'] as $row)
-            {
-                $post = $em->find(Post::class, $row['post']);
-                $department = $em->find(Department::class, $row['department']);
-                $name = $row['name'];
-
-                $worker = new Worker();
-                $worker->setPost($post)
-                    ->setDepartment($department)
-                    ->setName($name);
-                $em->persist($worker);
-            }
-            $em->flush();
-            $em->clear();
-        }
-        // if ($req['update']['status'])
-        // {
-
-        // }
-        if ($req['delete']['status'])
-        {
-            $delIds = $req['delete']['rows'];
+            $delIds = $req;
             $dqb->getQuery()->execute(["arr" => $delIds]);
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $error = $e->getCode();
+            $status = \false;
+            $em->rollback();
         }
 
         return $this->json([
-            "done" => $status
+            'done' => $status,
+            'error' => $error,
         ]);
     }
 }

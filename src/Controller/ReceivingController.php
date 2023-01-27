@@ -71,15 +71,17 @@ class ReceivingController extends AbstractController
             try
             {
                 $receiving = $form->getData();
-                $clothingId = $form->get('workClothing')->getData();
-                $clothing = $em->find(Receiving::class, $clothingId);
-                if (\is_null($clothing))
+                if (\is_null($receiving->getWorkClothing()->getReceiving()))
                 {
-                    $receiving->setWorkClothing($em->find(WorkClothing::class, $clothingId));
                     $em->persist($receiving);
                     $em->flush();
                     $em->commit();
                     return $this->redirectToRoute('receiving-add');
+                }
+                else
+                {
+                    $em->rollback();
+                    $err = 'Получение спецодежды с данным номером уже создано';
                 }
             }
             catch (Exception $e)
@@ -98,56 +100,35 @@ class ReceivingController extends AbstractController
         ]);
     }
 
-    #[Route('/request', name: 'receiving-request', methods: ['POST'])]
-    public function request(Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/delete', name: 'receiving-delete', methods: ['POST'])]
+    public function delete(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $status = \true;
-
-        // $uqb = $em->createQueryBuilder();
-        // $uqb->update(Receiving::class, 'r')
-        //     ->set('r.worker', ':worker')
-        //     ->set('r.date', ':date')
-        //     ->where('r.workClothing = :clothing')
-        // ;
-
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Receiving::class, 'r')
             ->where('r.workClothing in (:arr)')
         ;
 
         $req = \json_decode($request->getContent(), \true);
+        $status = \true;
+        $error = null;
 
-        if ($req['add']['status'])
+        $em->beginTransaction();
+        try
         {
-            foreach ($req['add']['rows'] as $row)
-            {
-                $worker = $em->find(Worker::class, $row['worker']);
-                $clothing = $em->find(WorkClothing::class, $row['clothing']);
-                $date = DateTime::createFromFormat('d/m/Y', $row['date']);
-                $signature = $row['signature'];
-
-                $receiving = new Receiving();
-                $receiving->setWorker($worker)
-                    ->setWorkClothing($clothing)
-                    ->setDate($date)
-                    ->setSignature($signature);
-                $em->persist($receiving);
-            }
-            $em->flush();
-            $em->clear();
-        }
-        // if ($req['update']['status'])
-        // {
-
-        // }
-        if ($req['delete']['status'])
-        {
-            $delIds = $req['delete']['rows'];
+            $delIds = $req;
             $dqb->getQuery()->execute(["arr" => $delIds]);
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $error = $e->getCode();
+            $status = \false;
+            $em->rollback();
         }
 
         return $this->json([
-            "done" => $status
+            'done' => $status,
+            'error' => $error,
         ]);
     }
 }

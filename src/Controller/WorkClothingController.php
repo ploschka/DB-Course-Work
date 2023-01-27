@@ -82,65 +82,35 @@ class WorkClothingController extends AbstractController
         ]);
     }
 
-    #[Route('/request', name: 'clothing-request', methods: ['POST'])]
-    public function request(Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/delete', name: 'clothing-delete', methods: ['POST'])]
+    public function delete(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $status = \true;
-
-        // $uqb = $em->createQueryBuilder();
-        // $uqb->update(Department::class, 'd')
-        //     ->set('r.worker', ':worker')
-        //     ->set('r.date', ':date')
-        //     ->where('r.workClothing = :clothing')
-        // ;
-
         $dqb = $em->createQueryBuilder();
         $dqb->delete(WorkClothing::class, 'c')
             ->where('c.id in (:arr)')
         ;
 
         $req = \json_decode($request->getContent(), \true);
+        $status = \true;
+        $error = null;
 
-        if ($req['add']['status'])
+        $em->beginTransaction();
+        try
         {
-            foreach ($req['add']['rows'] as $row)
-            {
-                $id = $row['id'];
-                $type = $row['type'];
-                $time = $row['time'];
-                $price = $row['price'];
-
-                $clothing = new WorkClothing();
-                $clothing->setId($id)
-                    ->setType($type)
-                    ->setWearTime($time)
-                    ->setPrice($price);
-                $em->persist($clothing);
-            }
-            $em->flush();
-            $em->clear();
+            $delIds = $req;
+            $dqb->getQuery()->execute(["arr" => $delIds]);
+            $em->commit();
         }
-        // if ($req['update']['status'])
-        // {
-
-        // }
-        if ($req['delete']['status'])
+        catch (Exception $e)
         {
-            $em->beginTransaction();
-            $delIds = $req['delete']['rows'];
-            try
-            {
-                $dqb->getQuery()->execute(["arr" => $delIds]);
-                $em->commit();
-            }
-            catch (Exception $e)
-            {
-                $em->rollback();
-            }
+            $error = $e->getCode();
+            $status = \false;
+            $em->rollback();
         }
 
         return $this->json([
-            "done" => $status
+            'done' => $status,
+            'error' => $error,
         ]);
     }
 }
