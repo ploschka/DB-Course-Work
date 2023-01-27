@@ -18,7 +18,10 @@ class WorkerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'label' => 'ФИО',
+                'data' => $options['name_value'],
+            ])
             ->add('department', EntityType::class, [
                 'class' => Department::class,
                 'choice_label' => 'name',
@@ -26,6 +29,14 @@ class WorkerType extends AbstractType
                 {
                     return $departmentRepository->createQueryBuilder('d')
                         ->orderBy('d.name', 'ASC');
+                },
+                'label' => 'Цех',
+                'choice_attr' => function ($choice, $key, $value) use ($options)
+                {
+                    if ($choice->getName() == $options['department_value'])
+                        return ['selected' => true];
+                    else
+                        return [];
                 }
             ])
             ->add('post', EntityType::class, [
@@ -35,6 +46,14 @@ class WorkerType extends AbstractType
                 {
                     return $postRepository->createQueryBuilder('p')
                         ->orderBy('p.name', 'ASC');
+                },
+                'label' => 'Должность',
+                'choice_attr' => function ($choice, $key, $value) use ($options)
+                {
+                    if ($choice->getName() == $options['post_value'])
+                        return ['selected' => true];
+                    else
+                        return [];
                 }
             ])
         ;
@@ -44,6 +63,9 @@ class WorkerType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Worker::class,
+            'name_value' => null,
+            'department_value' => null,
+            'post_value' => null,
         ]);
     }
 }

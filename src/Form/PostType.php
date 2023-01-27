@@ -14,8 +14,14 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
-            ->add('discount', IntegerType::class)
+            ->add('name', TextType::class, [
+                'label' => 'Название',
+                'data' => $options['name_value'],
+            ])
+            ->add('discount', IntegerType::class, [
+                'label' => 'Скидка',
+                'data' => $options['discount_value'],
+            ])
         ;
     }
 
@@ -23,6 +29,8 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
+            'name_value' => null,
+            'discount_value' => null,
         ]);
     }
 }

@@ -13,8 +13,14 @@ class DepartmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
-            ->add('chief_name', TextType::class)
+            ->add('name', TextType::class, [
+                'label' => 'Название',
+                'data' => $options['name_value'],
+            ])
+            ->add('chief_name', TextType::class, [
+                'label' => 'ФИО начальника',
+                'data' => $options['chief_name_value'],
+            ])
         ;
     }
 
@@ -22,6 +28,8 @@ class DepartmentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Department::class,
+            'name_value' => null,
+            'chief_name_value' => null,
         ]);
     }
 }

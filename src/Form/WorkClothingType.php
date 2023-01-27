@@ -15,10 +15,22 @@ class WorkClothingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id', TextType::class)
-            ->add('type', TextType::class)
-            ->add('price', NumberType::class)
-            ->add('wearTime', IntegerType::class)
+            ->add('id', TextType::class, [
+                'label' => 'Идентификатор',
+                'data' => $options['id_value'],
+            ])
+            ->add('type', TextType::class, [
+                'label' => 'Вид',
+                'data' => $options['type_value'],
+            ])
+            ->add('price', NumberType::class, [
+                'label' => 'Цена',
+                'data' => $options['price_value'],
+            ])
+            ->add('wearTime', IntegerType::class, [
+                'label' => 'Время носки',
+                'data' => $options['wearTime_value'],
+            ])
         ;
     }
 
@@ -26,6 +38,10 @@ class WorkClothingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => WorkClothing::class,
+            'id_value' => null,
+            'type_value' => null,
+            'price_value' => null,
+            'wearTime_value' => null,
         ]);
     }
 }
