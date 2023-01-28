@@ -45,7 +45,7 @@ class ReceivingType extends AbstractType
                     return $workClothingRepository->createQueryBuilder('c')
                         ->orderBy('c.id', 'ASC');
                 },
-                'label' => 'Идентификатор спецодежды',                
+                'label' => 'Идентификатор спецодежды',
                 'choice_attr' => function ($choice, $key, $value) use ($options)
                 {
                     if ($choice->getId() == $options['id_value'])
@@ -68,8 +68,7 @@ class ReceivingType extends AbstractType
             ->add('signature', TextType::class, [
                 'label' => 'Подпись',
                 'data' => $options['signature_value'],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}{% endblock %}</title>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}{% endblock %}
+		</title>
 
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block menu %}
-            <div class="menu">
-                <div class="menu-block">
-                    {% for item in menu %}
-                        {% if is_granted(item.role) %}                    
-                            {% if item.active %}
-                                {% set curr = 'active' %}
-                            {% else %}
-                                {% set curr = '' %}
-                            {% endif %}
-                            
-                            <a class="menu-item {{ curr }}" href="{{ url(item.path) }}" style="order: {{ item.order }};">
-                                <div>{{ item.title }}</div>
-                            </a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    {% set t = 'Выйти'%}
-                    {% set u = 'logout'%}
-                {% else %}
-                    {% set t = 'Войти'%}
-                    {% set u = 'login'%}
-                {% endif %}
-                <div class="menu-block reverse">            
-                    <a class="menu-item" href="{{ url(u) }}"><div>{{ t }}</div></a>
-                </div>
-            </div>
-        {% endblock %}
-        {% block body %}{% endblock %}
-    </body>
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</head>
+	<body>
+		{% block menu %}
+			<div class="menu">
+				<div class="menu-block">
+					{% for item in menu %}
+						{% if is_granted(item.role) %}
+							{% if item.active %}
+								{% set curr = 'active' %}
+							{% else %}
+								{% set curr = '' %}
+							{% endif %}
+
+							<a class="menu-item {{ curr }}" href="{{ url(item.path) }}" style="order: {{ item.order }};">
+								<div>{{ item.title }}</div>
+							</a>
+						{% endif %}
+					{% endfor %}
+				</div>
+				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+					{% set t = 'Выйти'%}
+					{% set u = 'logout'%}
+				{% else %}
+					{% set t = 'Войти'%}
+					{% set u = 'login'%}
+				{% endif %}
+				<div class="menu-block reverse">
+					<a class="menu-item" href="{{ url(u) }}">
+						<div>{{ t }}</div>
+					</a>
+				</div>
+			</div>
+		{% endblock %}
+		{% block body %}{% endblock %}
+	</body>
 </html>

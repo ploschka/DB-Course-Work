@@ -59,8 +59,7 @@ class ReceivingController extends AbstractController
     {
         $receiving = new Receiving;
         $form = $this->createForm(ReceivingType::class, $receiving)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -113,8 +112,7 @@ class ReceivingController extends AbstractController
             'signature_value' => $request->query->get('signature'),
         ];
         $form = $this->createForm(ReceivingType::class, options: $options)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -148,7 +146,7 @@ class ReceivingController extends AbstractController
                 $err = $e->getMessage();
             }
         }
-        
+
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Изменить цех',
@@ -163,8 +161,7 @@ class ReceivingController extends AbstractController
     {
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Receiving::class, 'r')
-            ->where('r.workClothing in (:arr)')
-        ;
+            ->where('r.workClothing in (:arr)');
 
         $req = \json_decode($request->getContent(), \true);
         $status = \true;

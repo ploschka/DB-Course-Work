@@ -13,18 +13,18 @@ $(function () {
         dom: 'Blfrtip',
         select: true,
         language: {
-            "emptyTable":       "Таблица пуста",
-            "info":             "Позиции с _START_ по _END_ из _TOTAL_",
-            "infoEmpty":        "Позиции с 0 по 0 из 0",
-            "infoFiltered":     "(отфильтровано из _MAX_ позиций)",
-            "lengthMenu":       "Показать _MENU_ записей",
-            "search":           "Поиск:",
-            "zeroRecords":      "Подходящих записей не найдено",
-            "infoPostFix":      " ",
+            "emptyTable": "Таблица пуста",
+            "info": "Позиции с _START_ по _END_ из _TOTAL_",
+            "infoEmpty": "Позиции с 0 по 0 из 0",
+            "infoFiltered": "(отфильтровано из _MAX_ позиций)",
+            "lengthMenu": "Показать _MENU_ записей",
+            "search": "Поиск:",
+            "zeroRecords": "Подходящих записей не найдено",
+            "infoPostFix": " ",
             "paginate": {
-                "first":    "<<",
-                "last":     ">>",
-                "next":     ">",
+                "first": "<<",
+                "last": ">>",
+                "next": ">",
                 "previous": "<"
             },
             select:
@@ -85,12 +85,6 @@ $(function () {
 
                     xhr.send(req)
                 }
-            },
-            {
-                text: "Debug",
-                action: function () {
-                    console.log(selectedRows)
-                }
             }
         ],
         pageLength: 25
@@ -100,12 +94,10 @@ $(function () {
     table.button(2).disable();
 
     table.on('select', function (e, dt, type, indexes) {
-        if (indexes.length > 1)
-        {
+        if (indexes.length > 1) {
             selectedRows = indexes;
         }
-        else
-        {
+        else {
             selectedRows = selectedRows.concat(indexes);
         }
         table.button(2).enable();

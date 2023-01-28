@@ -48,8 +48,7 @@ class PostController extends AbstractController
     {
         $post = new Post;
         $form = $this->createForm(PostType::class, $post)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -91,8 +90,7 @@ class PostController extends AbstractController
             'discount_value' => $request->query->get('discount'),
         ];
         $form = $this->createForm(PostType::class, options: $options)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -124,7 +122,7 @@ class PostController extends AbstractController
                 $err = $e->getMessage();
             }
         }
-        
+
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Изменить должность',
@@ -139,8 +137,7 @@ class PostController extends AbstractController
     {
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Post::class, 'p')
-            ->where('p.id in (:arr)')
-        ;
+            ->where('p.id in (:arr)');
 
         $req = \json_decode($request->getContent(), \true);
         $status = \true;

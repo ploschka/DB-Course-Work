@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    #[Menu(title: 'Главная', order: 0, role:"PUBLIC_ACCESS")]
+    #[Menu(title: 'Главная', order: 0, role: "PUBLIC_ACCESS")]
     public function index(): Response
     {
         $m = new MenuCreator;

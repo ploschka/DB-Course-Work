@@ -29,8 +29,7 @@ class DepartmentType extends AbstractType
             ->add('chief_name', TextType::class, [
                 'label' => 'ФИО начальника',
                 'data' => $options['chief_name_value'],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

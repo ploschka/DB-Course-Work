@@ -64,8 +64,7 @@ class WorkerType extends AbstractType
                     else
                         return [];
                 }
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

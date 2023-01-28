@@ -49,8 +49,7 @@ class WorkClothingController extends AbstractController
     {
         $clothing = new WorkClothing;
         $form = $this->createForm(WorkClothingType::class, $clothing)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -93,8 +92,7 @@ class WorkClothingController extends AbstractController
             'wearTime_value' => $request->query->get('time'),
         ];
         $form = $this->createForm(WorkClothingType::class, options: $options)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -127,7 +125,7 @@ class WorkClothingController extends AbstractController
                 $err = $e->getMessage();
             }
         }
-        
+
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Изменить цех',
@@ -142,8 +140,7 @@ class WorkClothingController extends AbstractController
     {
         $dqb = $em->createQueryBuilder();
         $dqb->delete(WorkClothing::class, 'c')
-            ->where('c.id in (:arr)')
-        ;
+            ->where('c.id in (:arr)');
 
         $req = \json_decode($request->getContent(), \true);
         $status = \true;

@@ -58,8 +58,7 @@ class WorkerController extends AbstractController
     {
         $worker = new Worker;
         $form = $this->createForm(WorkerType::class, $worker)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -102,8 +101,7 @@ class WorkerController extends AbstractController
             'post_value' => $request->query->get('post'),
         ];
         $form = $this->createForm(WorkerType::class, options: $options)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -136,7 +134,7 @@ class WorkerController extends AbstractController
                 $err = $e->getMessage();
             }
         }
-        
+
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Изменить цех',
@@ -151,8 +149,7 @@ class WorkerController extends AbstractController
     {
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Worker::class, 'w')
-            ->where('w.id in (:arr)')
-        ;
+            ->where('w.id in (:arr)');
 
         $req = \json_decode($request->getContent(), \true);
         $status = \true;

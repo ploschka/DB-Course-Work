@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
 
-    {{ form(form) }}
-    {% if error %}
-        {{ error }}
-    {% endif %}
-    
+	{{ form(form) }}
+		{% if error %}
+			{{ error }}
+		{% endif %}
 
-{% endblock %}
+
+	{% endblock %}

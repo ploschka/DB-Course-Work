@@ -12,9 +12,9 @@ class MenuCreator
     public function __construct()
     {
         $regex = '#(\w+)\.php#';
-    
+
         $files = \scandir(dirname(__DIR__) . '/Controller');
-        
+
         foreach ($files as $value)
         {
             if (\preg_match($regex, $value, $match))
@@ -30,7 +30,7 @@ class MenuCreator
             {
                 $route = $method->getAttributes(Route::class);
                 $menu = $method->getAttributes(Menu::class);
-                if(!empty($route) && !empty($menu))
+                if (!empty($route) && !empty($menu))
                 {
                     $routeArgs = $route[0]->getArguments();
                     $menuArgs = $menu[0]->getArguments();
@@ -41,7 +41,6 @@ class MenuCreator
                         'order' => $menuArgs['order'],
                     ];
                 }
-
             }
         }
     }

@@ -20,7 +20,7 @@ class PostType extends AbstractType
                 'data' => $options['id_value'],
             ]);
         }
-        
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Название',
@@ -29,8 +29,7 @@ class PostType extends AbstractType
             ->add('discount', IntegerType::class, [
                 'label' => 'Скидка',
                 'data' => $options['discount_value'],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

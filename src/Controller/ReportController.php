@@ -33,35 +33,34 @@ class ReportController extends AbstractController
             ['октябрь', 31],
             ['ноябрь', 30],
             ['декабрь', 31],
-        ];        
-        
+        ];
+
         if ((!($year % 4) && ($year % 100)) || (!($year % 400)))
         {
             $months[1][1] = 29;
         }
-        
+
         $currMonth = $months[$month - 1];
-        
+
         $from = DateTime::createFromFormat('Y/m/d', "$year/$month/01");
         $to = DateTime::createFromFormat('Y/m/d', "$year/$month/{$currMonth[1]}");
 
         $qb = $em->createQueryBuilder();
         $qb->select('r', 'c', 'w', 'd', 'p')
-           ->from(Receiving::class, 'r')
-           ->where('r.date >= :fr')
-           ->andWhere('r.date <= :to')
-           ->innerJoin('r.workClothing', 'c')
-           ->innerJoin('r.worker', 'w')
-           ->innerJoin('w.department', 'd')
-           ->innerJoin('w.post', 'p')
-           ->orderBy('d.name', 'ASC')
-           ->addOrderBy('w.name', 'ASC')
-           ->addOrderBy('c.type', 'ASC')
-        ;
+            ->from(Receiving::class, 'r')
+            ->where('r.date >= :fr')
+            ->andWhere('r.date <= :to')
+            ->innerJoin('r.workClothing', 'c')
+            ->innerJoin('r.worker', 'w')
+            ->innerJoin('w.department', 'd')
+            ->innerJoin('w.post', 'p')
+            ->orderBy('d.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->addOrderBy('c.type', 'ASC');
 
         $results = $qb->getQuery()->setParameters(['fr' => $from, 'to' => $to])->getResult();
 
-        
+
         $table = [];
         $dep = null;
         $total = 0;
@@ -142,14 +141,13 @@ class ReportController extends AbstractController
                 'month' => $month + 1,
             ]);
         }
-        
+
         $form = $this->createFormBuilder()
             ->add('month', ChoiceType::class, [
                 'choices' => $choices,
                 'label' => \false,
             ])
-            ->getForm()
-        ;
+            ->getForm();
         $m = new MenuCreator;
         return $this->render('report.html.twig', [
             'title' => 'Отчёт',

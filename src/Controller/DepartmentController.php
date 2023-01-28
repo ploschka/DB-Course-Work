@@ -48,8 +48,7 @@ class DepartmentController extends AbstractController
     {
         $department = new Department;
         $form = $this->createForm(DepartmentType::class, $department)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -91,8 +90,7 @@ class DepartmentController extends AbstractController
             'chief_name_value' => $request->query->get('chief_name'),
         ];
         $form = $this->createForm(DepartmentType::class, options: $options)
-            ->add('submit', SubmitType::class, ['label' => 'Отправить'])
-        ;
+            ->add('submit', SubmitType::class, ['label' => 'Отправить']);
 
         $err = null;
 
@@ -124,7 +122,7 @@ class DepartmentController extends AbstractController
                 $err = $e->getMessage();
             }
         }
-        
+
         $m = new MenuCreator;
         return $this->render('form.html.twig', [
             'title' => 'Изменить цех',
@@ -139,8 +137,7 @@ class DepartmentController extends AbstractController
     {
         $dqb = $em->createQueryBuilder();
         $dqb->delete(Department::class, 'd')
-            ->where('d.id in (:arr)')
-        ;
+            ->where('d.id in (:arr)');
 
         $req = \json_decode($request->getContent(), \true);
         $status = \true;

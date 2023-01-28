@@ -31,8 +31,7 @@ class WorkClothingType extends AbstractType
             ->add('wearTime', IntegerType::class, [
                 'label' => 'Время носки',
                 'data' => $options['wearTime_value'],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,19 +1,19 @@
-    <h1>{{ title }}</h1>
-    <table id="datatable" class="display compact">
-        <thead>
-            <tr>
-                {% for header in headers %}
-                    <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in table %}
-                <tr>
-                    {% for data in row %}
-                        <td>{{ data }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>{{ title }}</h1>
+<table id="datatable" class="display compact">
+	<thead>
+		<tr>
+			{% for header in headers %}
+				<th>{{ header }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in table %}
+			<tr>
+				{% for data in row %}
+					<td>{{ data }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
