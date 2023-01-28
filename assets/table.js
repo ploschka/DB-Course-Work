@@ -84,7 +84,8 @@ $(function () {
                     let req = JSON.stringify(arr)
 
                     xhr.send(req)
-                }
+                },
+
             }
         ],
         pageLength: 25
@@ -123,6 +124,7 @@ $(function () {
         }
 
         if (selectedRows.length === 0) {
+            table.button(1).disable();
             table.button(2).disable();
         }
 

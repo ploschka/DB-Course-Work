@@ -18,6 +18,7 @@ class DepartmentType extends AbstractType
             $builder->add('id', IntegerType::class, [
                 'disabled' => true,
                 'data' => $options['id_value'],
+                'label' => 'Идентификатор'
             ]);
         }
 
