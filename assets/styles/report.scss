@@ -1,0 +1,15 @@
+table#report
+{
+    border-collapse: collapse;
+    td, th
+    {
+        border: solid thin black;
+        text-align: left;
+        padding: 3px;
+    }
+
+    .bold
+    {
+        font-weight: bold;
+    }
+}

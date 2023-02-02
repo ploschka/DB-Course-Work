@@ -73,12 +73,17 @@ class ReportController extends AbstractController
             {
                 if ($depTotal > 0)
                 {
-                    $table[] = [$depTotal];
+                    $table[] = [
+                        ['Итого по цеху: ', ['colspan' => 4]],
+                        [$depTotal, []],
+                    ];
                     $total += $depTotal;
                     $depTotal = 0;
                 }
                 $dep = $work->getDepartment();
-                $table[] = [$dep->getName()];
+                $table[] = [
+                    [$dep->getName(), ['colspan' => 5, 'class' => 'bold']]
+                ];
             }
 
             $cloth = $rec->getWorkClothing();
@@ -87,17 +92,23 @@ class ReportController extends AbstractController
             $priceWithDiscount = $price - ($price * $disc / 100);
             $depTotal += $priceWithDiscount;
             $table[] = [
-                $work->getName(),
-                $cloth->getType(),
-                $price,
-                $disc,
-                $priceWithDiscount,
+                [$work->getName(), []],
+                [$cloth->getType(), []],
+                [$price, []],
+                [$disc, []],
+                [$priceWithDiscount, []],
             ];
         }
 
         $total += $depTotal;
-        $table[] = [$depTotal];
-        $table[] = [$total];
+        $table[] = [
+            ['Итого по цеху: ', ['colspan' => 4]],
+            [$depTotal, []],
+        ];
+        $table[] = [
+            ['Итого: ', ['colspan' => 4]],
+            [$total, []],
+        ];
 
         $headers = ['Ф.И.О. работника', 'Вид спецодежды', 'Стоимость единицы, тыс. руб.', 'Скидка %', 'Стоимость с учётом скидки, тыс. руб.'];
         $m = new MenuCreator;

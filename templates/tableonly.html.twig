@@ -1,5 +1,5 @@
 <h1>{{ title }}</h1>
-<table id="datatable" class="display compact">
+<table id="report">
 	<thead>
 		<tr>
 			{% for header in headers %}
@@ -11,7 +11,7 @@
 		{% for row in table %}
 			<tr>
 				{% for data in row %}
-					<td>{{ data }}</td>
+					<td {% for key, value in data[1] %} {{ key }}="{{ value }}" {% endfor %}>{{ data[0] }}</td>
 				{% endfor %}
 			</tr>
 		{% endfor %}

@@ -8,6 +8,7 @@ use App\Entity\Worker;
 use App\Repository\WorkClothingRepository;
 use App\Repository\WorkerRepository;
 use DateTime;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -42,8 +43,11 @@ class ReceivingType extends AbstractType
                 'choice_label' => 'id',
                 'query_builder' => function (WorkClothingRepository $workClothingRepository)
                 {
-                    return $workClothingRepository->createQueryBuilder('c')
+                    $qb = $workClothingRepository->createQueryBuilder('c');
+                    $qb->leftJoin(Receiving::class, 'r', Join::WITH, $qb->expr()->eq('c.id', 'r.workClothing'))
+                        ->where($qb->expr()->isNull('r'))
                         ->orderBy('c.id', 'ASC');
+                    return $qb;
                 },
                 'label' => 'Идентификатор спецодежды',
                 'choice_attr' => function ($choice, $key, $value) use ($options)
